@@ -7,29 +7,20 @@ from pynput.keyboard import Key, Controller
 import threading
 from time import sleep
 import mido
+from settings import queuedSong, toggleplay, finishedLoading
 
 if __name__ == '__main__':
     root = tkinter.Tk()
-    Rmidi = rmidi.rmidi()
-
     root.title = 'Midi to Keystrokes for Linux'
     root.overrideredirect(True)
 
-    queuedSongList = []
-    queuedSong = ''
-
-    finishedLoading = False
-
-    toggleplay = 0
+    Rmidi = rmidi.rmidi()
 
     def inputPlayback():
-        global queuedSong
-        global queuedSongList
-        global toggleplay
+        global toggleplay, finishedLoading, queuedSong
         ckeyboard = Controller()
         currentsong = ''
         def on_press(key):
-            global toggleplay
             if key == Key.f8:
                 if toggleplay == 1:
                     toggleplay = 0
@@ -94,7 +85,6 @@ if __name__ == '__main__':
 
     class guiMethods:
         def makeList(self, event):
-            global Rmidi
             cleanlist = []
             lslist = Rmidi.list_midi_files()
 
@@ -104,11 +94,7 @@ if __name__ == '__main__':
             dropdown.config(values=cleanlist)
 
         def queueSong(self):
-            global Rmidi
-            global queuedSongList
-            global queuedSong
             queuedSong = dropdown.get()
-            queuedSongList = Rmidi.midToList(queuedSong)
             currentStatus.config(text=f"Queued song: {queuedSong}\nPress F8 to play.", justify="center")
 
 
@@ -126,5 +112,3 @@ if __name__ == '__main__':
 
     
     root.mainloop()
-
-
