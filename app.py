@@ -92,32 +92,33 @@ if __name__ == '__main__':
     t = threading.Thread(target=inputPlayback)
     t.start()
 
-    def makeList(event):
-        global Rmidi
-        cleanlist = []
-        lslist = Rmidi.list_midi_files()
+    class guiMethods:
+        def makeList(self, event):
+            global Rmidi
+            cleanlist = []
+            lslist = Rmidi.list_midi_files()
 
-        for entry in lslist:
-            if '.mid' in entry:
-                cleanlist.append(entry)
-        dropdown.config(values=cleanlist)
+            for entry in lslist:
+                if '.mid' in entry:
+                    cleanlist.append(entry)
+            dropdown.config(values=cleanlist)
 
-    def queueSong():
-        global Rmidi
-        global queuedSongList
-        global queuedSong
-        queuedSong = dropdown.get()
-        queuedSongList = Rmidi.midToList(queuedSong)
-        currentStatus.config(text=f"Queued song: {queuedSong}\nPress F8 to play.", justify="center")
+        def queueSong(self):
+            global Rmidi
+            global queuedSongList
+            global queuedSong
+            queuedSong = dropdown.get()
+            queuedSongList = Rmidi.midToList(queuedSong)
+            currentStatus.config(text=f"Queued song: {queuedSong}\nPress F8 to play.", justify="center")
 
 
 
     currentStatus = ttk.Label(root, text="Not playing", justify="center")
     dropdown = ttk.Combobox(root, values=NotImplemented)
-    playSong = ttk.Button(root, text="Play selected song", command=queueSong)
+    playSong = ttk.Button(root, text="Play selected song", command=lambda: guiMethods().queueSong())
     
     dropdown.set("Select a file to play")
-    dropdown.bind("<Button>", makeList)
+    dropdown.bind("<Button>", lambda event: guiMethods().makeList(event))
     
     dropdown.grid(row=1, column=0)
     currentStatus.grid(row=0, column=0)
