@@ -46,6 +46,7 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [x] Get project working!
 - [ ] Automagically create a music directory
 - [ ] More transpostion options? (Idk if ive implemented it correctly)
-- [ ] GUI Overhaul  
+- [ ] GUI Overhaul
+- [ ] Build pre-built binaries
 
 List subject to change
