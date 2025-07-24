@@ -4,6 +4,7 @@ import rmidi
 import threading
 from time import sleep
 import settings
+import filechecker
 
 if __name__ == '__main__':
     root = tkinter.Tk()
@@ -11,6 +12,8 @@ if __name__ == '__main__':
     root.overrideredirect(True)
 
     Rmidi = rmidi.rmidi()
+
+    filechecker.FileChecker().check_dir('./music', True)
 
     
 
