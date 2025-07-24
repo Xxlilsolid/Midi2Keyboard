@@ -7,7 +7,7 @@ from pynput.keyboard import Key, Controller
 import threading
 from time import sleep
 import mido
-from settings import queuedSong, toggleplay, finishedLoading
+import settings
 
 if __name__ == '__main__':
     root = tkinter.Tk()
@@ -17,29 +17,29 @@ if __name__ == '__main__':
     Rmidi = rmidi.rmidi()
 
     def inputPlayback():
-        global toggleplay, finishedLoading, queuedSong
+        global settings
         ckeyboard = Controller()
-        currentsong = ''
+        settings.currentsong = ''
         def on_press(key):
             if key == Key.f8:
-                if toggleplay == 1:
-                    toggleplay = 0
-                elif toggleplay == 0:
-                    toggleplay = 1
+                if settings.toggleplay == 1:
+                    settings.toggleplay = 0
+                elif settings.toggleplay == 0:
+                    settings.toggleplay = 1
         listner = keyboard.Listener(on_press=on_press)
         listner.start()
         while True:
-            if queuedSong != '':
-                if currentsong == queuedSong:
-                    currentsong = queuedSong
-                    if toggleplay == 1:
-                        while toggleplay == 1:
-                            if currentsong != queuedSong: # Checks if user hasnt changed selection
-                                toggleplay = 0
-                                currentsong = queuedSong
+            if settings.queuedSong != '':
+                if settings.currentsong == settings.queuedSong:
+                    settings.currentsong = settings.queuedSong
+                    if settings.toggleplay == 1:
+                        while settings.toggleplay == 1:
+                            if settings.currentsong != settings.queuedSong: # Checks if user hasnt changed selection
+                                settings.toggleplay = 0
+                                settings.currentsong = settings.queuedSong
                                 break
-                            for msg in mido.MidiFile(f"./music/{currentsong}").play():
-                                if toggleplay == 0:
+                            for msg in mido.MidiFile(f"./music/{settings.currentsong}").play():
+                                if settings.toggleplay == 0:
                                     break
                                 try:
                                     note = msg.note
@@ -71,13 +71,13 @@ if __name__ == '__main__':
                                         ckeyboard.press(Rmidi.keymap[note]) # For lowercase
                                         ckeyboard.release(Rmidi.keymap[note])
                             break
-                        toggleplay = 0
+                        settings.toggleplay = 0
                     else:
                         pass
-                elif currentsong != queuedSong: # Another check, idk if its redundant or anything, icba to check.
-                    currentsong = queuedSong
-                    toggleplay = 0
-            elif queuedSong == '':
+                elif settings.currentsong != settings.queuedSong: # Another check, idk if its redundant or anything, icba to check.
+                    settings.currentsong = settings.queuedSong
+                    settings.toggleplay = 0
+            elif settings.queuedSong == '':
                 pass
 
     t = threading.Thread(target=inputPlayback)
@@ -94,8 +94,9 @@ if __name__ == '__main__':
             dropdown.config(values=cleanlist)
 
         def queueSong(self):
-            queuedSong = dropdown.get()
-            currentStatus.config(text=f"Queued song: {queuedSong}\nPress F8 to play.", justify="center")
+            global settings
+            settings.queuedSong = dropdown.get()
+            currentStatus.config(text=f"Queued song: {settings.settings.queuedSong}\nPress F8 to play.", justify="center")
 
 
 
