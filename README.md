@@ -35,9 +35,9 @@ main.py (when venv is active, if not do .venv/bin/python main.py)
 
 ## Instructions
 
-Create the folder "music" relative to where the executable is.  
-Put your glorious .mid files in there.  
-Profit.
+Run the python script or executable  
+Put your glorious .mid files in the newly created "music" file.  
+Follow the steps on the GUI.
 
 ## Future plans
 
