@@ -45,7 +45,7 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 
 - [x] Get project working!
 - [x] Automagically create a music directory
-- [ ] Persistent settings capabilities
+- [x] Persistent settings capabilities
 - [ ] More transpostion options? (Idk if ive implemented it correctly)
 - [ ] GUI Overhaul
 - [ ] Build pre-built binaries. 
