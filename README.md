@@ -47,6 +47,8 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [ ] Automagically create a music directory
 - [ ] More transpostion options? (Idk if ive implemented it correctly)
 - [ ] GUI Overhaul
-- [ ] Build pre-built binaries
+- [ ] Build pre-built binaries. 
+- [ ] Comment and/or make docstrings in methods
+- [ ] Auto updater for releases (and git)
 
 List subject to change
