@@ -51,5 +51,6 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [ ] Build pre-built binaries. 
 - [ ] Comment and/or make docstrings in methods
 - [ ] Auto updater for releases (and git)
+- [ ] Abide by the naming conventions
 
 List subject to change
