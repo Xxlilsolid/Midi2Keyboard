@@ -48,7 +48,9 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [ ] Persistent settings capabilities
 - [ ] More transpostion options? (Idk if ive implemented it correctly)
 - [ ] GUI Overhaul
-- [ ] Build pre-built binaries
+- [ ] Build pre-built binaries. 
+- [ ] Comment and/or make docstrings in methods
+- [ ] Auto updater for releases (and git)
 - [ ] Abide by the naming conventions
 
 List subject to change
