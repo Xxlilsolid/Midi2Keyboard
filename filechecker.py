@@ -1,4 +1,5 @@
 import os
+import json
 
 
 if __name__ == 'main':
@@ -15,4 +16,19 @@ else:
                 return ["True", "Directory created"]
             return ["True", "Directory exists"]
         def read_settings(self, settings_file):
-            pass
+            with open(settings_file, 'r') as file:
+                try:
+                    return json.load(file)
+                except:
+                    return False
+        def write_settings(self, settings_file, entry):
+            with open(settings_file, 'r+') as file:
+                jsonDict = json.load(file)
+                jsonDict[entry[0]] = entry[1]
+                file.seek(0)
+                json.dump(jsonDict, file, indent=4)
+        def generate_settings(self,settingsName, settingsContent):
+            with open(settingsName, "w") as file:
+                json.dump(settingsContent, file, indent=4)
+            
+
