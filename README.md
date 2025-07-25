@@ -44,7 +44,8 @@ Profit.
 Once I get the project to where I am satisfied, I will probably stop maintaining the project. Anyways, here is my todo on the project thus far (in no particular order btw)!
 
 - [x] Get project working!
-- [ ] Automagically create a music directory
+- [x] Automagically create a music directory
+- [x] Persistent settings capabilities
 - [ ] More transpostion options? (Idk if ive implemented it correctly)
 - [ ] GUI Overhaul
 - [ ] Build pre-built binaries. 
