@@ -24,13 +24,21 @@ else:
                         return False
             except:
                 return False
-        def write_settings(self, settings_file, entry):
+        def write_settings(self, settings_file, entry: list):
             with open(settings_file, 'r+') as file:
                 jsonDict = json.load(file)
                 jsonDict[entry[0]] = entry[1]
                 file.seek(0)
                 json.dump(jsonDict, file, indent=4)
-        def generate_settings(self,settingsName, settingsContent):
+                file.truncate()
+        def delete_entry(self, settings_file, key):
+            jsonDict = self.read_settings(settings_file)
+            with open(settings_file, 'r+') as file:
+                del jsonDict[key]
+                file.seek(0)
+                json.dump(jsonDict, file, indent=4)
+                file.truncate()
+        def generate_settings(self,settingsName, settingsContent: dict):
             with open(settingsName, "w") as file:
                 json.dump(settingsContent, file, indent=4)
             

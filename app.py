@@ -6,6 +6,7 @@ from time import sleep
 import settings
 import filechecker
 
+
 if __name__ == '__main__':
     root = tkinter.Tk()
     root.title = 'Midi to Keystrokes for Linux'
@@ -24,6 +25,16 @@ if __name__ == '__main__':
     t.start()
 
     class guiMethods:
+
+        def checksettingsqueue(self):
+            global settings
+            settingsdict = filechecker.FileChecker().read_settings(SETTINGS_FILE)
+            try:
+                settings.queuedSong = settingsdict["lastsong"]
+                return f"Queued song: {settings.queuedSong}\nPress F8 to play."
+            except KeyError:
+                return "Not Playing"
+
         def makeList(self, event):
             cleanlist = []
             lslist = Rmidi.list_midi_files()
@@ -40,12 +51,12 @@ if __name__ == '__main__':
             currentStatus.config(text=f"Queued song: {settings.queuedSong}\nPress F8 to play.", justify="center")
 
 
-
-    currentStatus = ttk.Label(root, text="Not playing", justify="center")
+    currentStatus = ttk.Label(root, text=guiMethods().checksettingsqueue(), justify="center")
     dropdown = ttk.Combobox(root, values=NotImplemented)
     playSong = ttk.Button(root, text="Play selected song", command=lambda: guiMethods().queueSong())
     
-    dropdown.set("Select a file to play")
+    if not settings.queuedSong: dropdown.set("Select a file to play")
+    else: dropdown.set(settings.queuedSong)
     dropdown.bind("<Button>", lambda event: guiMethods().makeList(event))
     
     dropdown.grid(row=1, column=0)
