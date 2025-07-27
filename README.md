@@ -39,6 +39,11 @@ Run the python script or executable
 Put your glorious .mid files in the newly created "music" file.  
 Follow the steps on the GUI.
 
+## Known bugs and issues
+
+- Because the project was designed with Hyprland... it was made with hyprland in mind. I will fix it in hopefully the next commit so DE's like XFCE4, Gnome etc can use the programme with ease. For now, comment ```root.overrideredirect(True)```
+- Linux mint  (and by extension ubuntu and from testing in a vm) will fail building evdev and wont be able to import tkinter. For tkinter, use ```sudo apt install python3-tk``` to fix this. For evdev, my great buddy (chatgpt) has helped (unwillingly) me with troubleshooting the problem. For this do ```sudo apt install python3-dev python3-pip libevdev-dev libudev-dev build-essential```.
+
 ## Future plans
 
 Once I get the project to where I am satisfied, I will probably stop maintaining the project. Anyways, here is my todo on the project thus far (in no particular order btw)!
@@ -53,5 +58,6 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [ ] Auto updater for releases (and git)
 - [ ] Abide by the naming conventions
 - [ ] Ability to pause and unpause songs w/o stopping the whole song
+- [ ] Kind of far fetched, but able to download .mid files to use with the programme
 
 List subject to change
