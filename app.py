@@ -4,6 +4,8 @@ import rmidi
 import threading
 from time import sleep
 import settings
+import filechecker
+
 
 if __name__ == '__main__':
     root = tkinter.Tk()
@@ -12,12 +14,27 @@ if __name__ == '__main__':
 
     Rmidi = rmidi.rmidi()
 
+    SETTINGS_FILE = "settings.json"
+
+    filechecker.FileChecker().check_dir('./music', True)
+    if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: filechecker.FileChecker().generate_settings(SETTINGS_FILE, {"placeholder": 0})
+
     
 
     t = threading.Thread(target=Rmidi.inputPlayback)
     t.start()
 
     class guiMethods:
+
+        def checksettingsqueue(self):
+            global settings
+            settingsdict = filechecker.FileChecker().read_settings(SETTINGS_FILE)
+            try:
+                settings.queuedSong = settingsdict["lastsong"]
+                return f"Queued song: {settings.queuedSong}\nPress F8 to play."
+            except KeyError:
+                return "Not Playing"
+
         def makeList(self, event):
             cleanlist = []
             lslist = Rmidi.list_midi_files()
@@ -30,15 +47,16 @@ if __name__ == '__main__':
         def queueSong(self):
             global settings
             settings.queuedSong = dropdown.get()
+            filechecker.FileChecker().write_settings(SETTINGS_FILE, ["lastsong", settings.queuedSong])
             currentStatus.config(text=f"Queued song: {settings.queuedSong}\nPress F8 to play.", justify="center")
 
 
-
-    currentStatus = ttk.Label(root, text="Not playing", justify="center")
+    currentStatus = ttk.Label(root, text=guiMethods().checksettingsqueue(), justify="center")
     dropdown = ttk.Combobox(root, values=NotImplemented)
     playSong = ttk.Button(root, text="Play selected song", command=lambda: guiMethods().queueSong())
     
-    dropdown.set("Select a file to play")
+    if not settings.queuedSong: dropdown.set("Select a file to play")
+    else: dropdown.set(settings.queuedSong)
     dropdown.bind("<Button>", lambda event: guiMethods().makeList(event))
     
     dropdown.grid(row=1, column=0)

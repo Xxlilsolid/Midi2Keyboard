@@ -35,22 +35,23 @@ main.py (when venv is active, if not do .venv/bin/python main.py)
 
 ## Instructions
 
-Create the folder "music" relative to where the executable is.  
-Put your glorious .mid files in there.  
-Profit.
+Run the python script or executable  
+Put your glorious .mid files in the newly created "music" file.  
+Follow the steps on the GUI.
 
 ## Future plans
 
 Once I get the project to where I am satisfied, I will probably stop maintaining the project. Anyways, here is my todo on the project thus far (in no particular order btw)!
 
 - [x] Get project working!
-- [ ] Automagically create a music directory
-- [ ] Persistent settings capabilities
+- [x] Automagically create a music directory
+- [x] Persistent settings capabilities
 - [ ] More transpostion options? (Idk if ive implemented it correctly)
 - [ ] GUI Overhaul
 - [ ] Build pre-built binaries. 
 - [ ] Comment and/or make docstrings in methods
 - [ ] Auto updater for releases (and git)
 - [ ] Abide by the naming conventions
+- [ ] Ability to pause and unpause songs w/o stopping the whole song
 
 List subject to change
