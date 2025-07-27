@@ -52,5 +52,6 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [ ] Comment and/or make docstrings in methods
 - [ ] Auto updater for releases (and git)
 - [ ] Abide by the naming conventions
+- [ ] Ability to pause and unpause songs w/o stopping the whole song
 
 List subject to change

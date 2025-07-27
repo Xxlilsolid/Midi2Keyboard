@@ -13,7 +13,10 @@ if __name__ == '__main__':
 
     Rmidi = rmidi.rmidi()
 
+    SETTINGS_FILE = "settings.json"
+
     filechecker.FileChecker().check_dir('./music', True)
+    if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: filechecker.FileChecker().generate_settings(SETTINGS_FILE, {"placeholder": 0})
 
     
 
@@ -33,6 +36,7 @@ if __name__ == '__main__':
         def queueSong(self):
             global settings
             settings.queuedSong = dropdown.get()
+            filechecker.FileChecker().write_settings(SETTINGS_FILE, ["lastsong", settings.queuedSong])
             currentStatus.config(text=f"Queued song: {settings.queuedSong}\nPress F8 to play.", justify="center")
 
 

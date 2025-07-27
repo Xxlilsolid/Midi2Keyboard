@@ -16,11 +16,14 @@ else:
                 return ["True", "Directory created"]
             return ["True", "Directory exists"]
         def read_settings(self, settings_file):
-            with open(settings_file, 'r') as file:
-                try:
-                    return json.load(file)
-                except:
-                    return False
+            try:
+                with open(settings_file, 'r') as file:
+                    try:
+                        return json.load(file)
+                    except:
+                        return False
+            except:
+                return False
         def write_settings(self, settings_file, entry):
             with open(settings_file, 'r+') as file:
                 jsonDict = json.load(file)
