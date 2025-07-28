@@ -7,11 +7,24 @@ from pynput.keyboard import Key, Controller
 import requests
 import yt_dlp
 from time import sleep
+import shutil
 
 if __name__ == "__main__":
     print("This is a module silly")
 else:
-
+    class ExpireToken(Exception):
+        def __init__(self, message):
+            self.message = message
+            super().__init__(self.message)
+    class TokenNotFound(Exception):
+        def __init__(self, message):
+            self.message = message
+            super().__init__(self.message)
+    class MultipleSongsQueued(Exception):
+        def __init__(self, message):
+            self.message = message
+            super().__init__(self.message)
+        
     class rmidi:
 
         def __init__(self):
@@ -169,10 +182,10 @@ else:
                     pass
 
         
-        def downloadmid(self, url, location, cookie):
+        def downloadmid(self, url, tmplocation, cookie):
             ydl_opts = {
                 'format': 'mp3/bestaudio/best',
-                'outtmpl': f"{os.path.abspath(location)}/%(title)s.%(ext)s",  # Save to the specified location with the title as filename
+                'outtmpl': f"{os.path.abspath(tmplocation)}/%(title)s.%(ext)s",  # Save to the specified location with the title as filename
                 # ℹ️ See help(yt_dlp.postprocessor) for a list of available Postprocessors and their arguments
                 'postprocessors': [{  # Extract audio using ffmpeg
                     'key': 'FFmpegExtractAudio',
@@ -181,20 +194,31 @@ else:
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                for file in os.listdir(tmplocation): os.remove(os.path.join(tmplocation, file))
                 error_code = ydl.download(url)
 
             cookiesdict = {"accessToken": cookie, "ch-session": cookie, "refreshToken": cookie}
-            location = './tmp'
             URL = "https://api.ai-midi.com/api/v1/transcribe?bpm=120&beat=4&bar=4&input_method=upload"
-            x = requests.post(URL, files={'input_audio': open(f'{location}/{os.listdir(location)[0]}', 'rb')}, cookies=cookiesdict)
+            x = requests.post(URL, files={'input_audio': open(f'{tmplocation}/{os.listdir(tmplocation)[0]}', 'rb')}, cookies=cookiesdict)
             print(x.text)
+            try:
+                if x.json()["status"] == "Token expired":
+                    raise ExpireToken(x.json()["status"]) # Work on refreshing token later, for now manually refresh
+                elif x.json()["status"] == "Token not found":
+                    raise TokenNotFound(x.json()["status"])
+                elif x.json()["status"] == "Internal Server Error":
+                    os.remove(f"{tmplocation}/*")
+                    raise MultipleSongsQueued(f"{x.json()["status"]}. Try operation again")
+            except:
+                pass
             request_id = x.json()['request_id']
             while True:
                 y = requests.get(f'https://api.ai-midi.com/api/v1/transcribe/status/{request_id}')
                 if y.json()['status'] == "completed":
                     download_url = f"https://api.ai-midi.com/api/v1/transcribe/download/{request_id}"
                     z = requests.get(download_url)
-                    with open(f"{location}/output.mid", 'wb') as f:
+                    with open(f"{tmplocation}/{os.listdir(tmplocation)[0][:-4]}.mid", 'wb') as f:
                         f.write(z.content)
+                        shutil.move(f"{tmplocation}/{os.listdir(tmplocation)[0][:-4]}.mid", f"{os.path.abspath("./music")}/{os.listdir(tmplocation)[0][:-4]}.mid")
                         break
                 sleep(5)
