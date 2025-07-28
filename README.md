@@ -41,7 +41,6 @@ Follow the steps on the GUI.
 
 ## Known bugs and issues
 
-- Because the project was designed with Hyprland... it was made with hyprland in mind. I will fix it in hopefully the next commit so DE's like XFCE4, Gnome etc can use the programme with ease. For now, comment ```root.overrideredirect(True)```
 - Linux mint  (and by extension ubuntu and from testing in a vm) will fail building evdev and wont be able to import tkinter. For tkinter, use ```sudo apt install python3-tk``` to fix this. For evdev, my great buddy (chatgpt) has helped (unwillingly) me with troubleshooting the problem. For this do ```sudo apt install python3-dev python3-pip libevdev-dev libudev-dev build-essential```.
 
 ## Future plans

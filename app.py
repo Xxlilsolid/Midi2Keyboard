@@ -5,16 +5,21 @@ import threading
 from time import sleep
 import settings
 import filechecker
-
+import os
+import subprocess
 
 if __name__ == '__main__':
     root = tkinter.Tk()
     root.title = 'Midi to Keystrokes for Linux'
-    root.overrideredirect(True)
 
     Rmidi = rmidi.rmidi()
 
     SETTINGS_FILE = "settings.json"
+    settings.DESKTOP_SESSION = subprocess.check_output("echo $DESKTOP_SESSION", shell=True, text=True).strip()
+
+    if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
+        print("Tiling window manager mode is active.")
+        root.overrideredirect(True)
 
     filechecker.FileChecker().check_dir('./music', True)
     if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: filechecker.FileChecker().generate_settings(SETTINGS_FILE, {"placeholder": 0})
