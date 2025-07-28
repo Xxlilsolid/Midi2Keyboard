@@ -10,7 +10,7 @@ import subprocess
 
 if __name__ == '__main__':
     root = tkinter.Tk()
-    root.title = 'Midi to Keystrokes for Linux'
+    root.title('Midi to Keystrokes for Linux')
 
     Rmidi = rmidi.rmidi()
 
