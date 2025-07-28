@@ -69,5 +69,6 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [ ] Kind of far fetched, but able to download .mid files to use with the programme
 - [ ] PKGBUILD would be cool ig
 - [ ] Project logo for README and icon in bar
+- [ ] Exception handling (because its basically non existent lol)
 
 List subject to change

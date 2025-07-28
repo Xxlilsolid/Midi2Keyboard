@@ -4,6 +4,9 @@ from mido import MidiFile
 import settings
 from pynput import keyboard
 from pynput.keyboard import Key, Controller 
+import requests
+import yt_dlp
+from time import sleep
 
 if __name__ == "__main__":
     print("This is a module silly")
@@ -165,4 +168,33 @@ else:
                 elif settings.queuedSong == '':
                     pass
 
+        
+        def downloadmid(self, url, location, cookie):
+            ydl_opts = {
+                'format': 'mp3/bestaudio/best',
+                'outtmpl': f"{os.path.abspath(location)}/%(title)s.%(ext)s",  # Save to the specified location with the title as filename
+                # ℹ️ See help(yt_dlp.postprocessor) for a list of available Postprocessors and their arguments
+                'postprocessors': [{  # Extract audio using ffmpeg
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                }]
+            }
 
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                error_code = ydl.download(url)
+
+            cookiesdict = {"accessToken": cookie, "ch-session": cookie, "refreshToken": cookie}
+            location = './tmp'
+            URL = "https://api.ai-midi.com/api/v1/transcribe?bpm=120&beat=4&bar=4&input_method=upload"
+            x = requests.post(URL, files={'input_audio': open(f'{location}/{os.listdir(location)[0]}', 'rb')}, cookies=cookiesdict)
+            print(x.text)
+            request_id = x.json()['request_id']
+            while True:
+                y = requests.get(f'https://api.ai-midi.com/api/v1/transcribe/status/{request_id}')
+                if y.json()['status'] == "completed":
+                    download_url = f"https://api.ai-midi.com/api/v1/transcribe/download/{request_id}"
+                    z = requests.get(download_url)
+                    with open(f"{location}/output.mid", 'wb') as f:
+                        f.write(z.content)
+                        break
+                sleep(5)
