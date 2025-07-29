@@ -8,6 +8,7 @@ import requests
 import yt_dlp
 from time import sleep
 import shutil
+import filechecker
 
 if __name__ == "__main__":
     print("This is a module silly")
@@ -182,7 +183,7 @@ else:
                     pass
 
         
-        def downloadmid(self, url, tmplocation, cookie):
+        def downloadmid(self, url, tmplocation, cookie, refreshtoken):
             ydl_opts = {
                 'format': 'mp3/bestaudio/best',
                 'outtmpl': f"{os.path.abspath(tmplocation)}/%(title)s.%(ext)s",  # Save to the specified location with the title as filename
@@ -198,7 +199,7 @@ else:
                 error_code = ydl.download(url)
 
             cookiesdict = {"accessToken": cookie}
-            refreshdict = {"access_token": cookie, "token_type": "bearer"}
+            refreshdict = {"refreshToken": refreshtoken}
 
             URL = "https://api.ai-midi.com/api/v1/transcribe?bpm=120&beat=4&bar=4&input_method=upload"
             x = requests.post(URL, files={'input_audio': open(f'{tmplocation}/{os.listdir(tmplocation)[0]}', 'rb')}, cookies=cookiesdict)
@@ -208,8 +209,9 @@ else:
                 if x.json()["detail"] == "Token expired":
                     print("Token expired, refreshing...")
                     refreshrequest = requests.post("https://api.ai-midi.com/api/v1/auth/refresh", cookies=refreshdict)
-                    print("Refresh request sent.")
-                    x = requests.post(URL, files={'input_audio': open(f'{tmplocation}/{os.listdir(tmplocation)[0]}', 'rb')}, cookies=cookiesdict)
+                    filechecker.FileChecker().write_settings("settings.json", ["cookie", refreshrequest.json()["access_token"]])
+                    print("Refreshed token and writen new token to settings.json")
+                    x = requests.post(URL, files={'input_audio': open(f'{tmplocation}/{os.listdir(tmplocation)[0]}', 'rb')}, cookies={"accessToken": refreshrequest.json()["access_token"]})
                     request_id = x.json()['request_id']
                 elif x.json()["detail"] == "Token not found":
                     pass
