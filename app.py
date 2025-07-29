@@ -7,6 +7,8 @@ import settings
 import filechecker
 import os
 import subprocess
+from tkinter import messagebox
+
 
 if __name__ == '__main__':
     root = tkinter.Tk()
@@ -19,7 +21,7 @@ if __name__ == '__main__':
 
     if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
         print("Tiling window manager mode is active.")
-        root.overrideredirect(True)
+        root.wm_attributes("-type", "utility")
 
     filechecker.FileChecker().check_dir('./music', True)
     if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: filechecker.FileChecker().generate_settings(SETTINGS_FILE, {"placeholder": 0})
@@ -65,43 +67,66 @@ if __name__ == '__main__':
             newWindow = tkinter.Toplevel(root)
             newWindow.title("Download song")
             if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
-                newWindow.overrideredirect(True)
-                
-                frame = ttk.Frame(newWindow)
-                frame.pack(side=tkinter.TOP,padx=0, pady=0)
+                newWindow.wm_attributes("-type", "utility")
+        
+            frame = ttk.Frame(newWindow)
+            frame.pack(side=tkinter.TOP,padx=0, pady=0)
 
-                label = ttk.Label(frame, text="Add your cookie here", justify="center")
-                cookieEntry = ttk.Entry(frame, width=25)
-                if filechecker.FileChecker().read_settings(SETTINGS_FILE)["cookie"] != '':
-                    label.config(text="Cookie already set, you can change it here")
-                songlabel = ttk.Label(frame, text="Enter song URL from youtube (Piano covers are best)", justify="center")
-                songEntry = ttk.Entry(frame, width=25)
-                
-                label.grid(row=0, column=0)
-                cookieEntry.grid(row=1, column=0)
-                songlabel.grid(row=2, column=0)
-                songEntry.grid(row=3, column=0)
+            accessLabel = ttk.Label(frame, text="Add your access token here", justify="center")
+            accessCookieEntry = ttk.Entry(frame, width=25)
+            if filechecker.FileChecker().read_settings(SETTINGS_FILE)["cookie"] != '':
+                accessLabel.config(text="Access token already set, you can change it here")
+            refreshLabel = ttk.Label(frame, text="Add your refresh token here", justify="center")
+            refreshCookieEntry = ttk.Entry(frame, width=25)
+            if filechecker.FileChecker().read_settings(SETTINGS_FILE)["refresh_token"] != '':
+                refreshLabel.config(text="Refresh token already set, you can change it here")
+            songlabel = ttk.Label(frame, text="Enter song URL from youtube (Piano covers are best)", justify="center")
+            songEntry = ttk.Entry(frame, width=25)
 
-                commandbuttonframe = ttk.Frame(newWindow)
-                commandbuttonframe.pack(side=tkinter.BOTTOM, padx=0, pady=0)
+            def downloadsong():
+                if songEntry.get() == '':
+                    messagebox.showerror("Error", "You must enter a song URL to download!")
+                    return
+                Rmidi.downloadmid(songEntry.get(), "./tmp", filechecker.FileChecker().read_settings("settings.json")["cookie"], filechecker.FileChecker().read_settings("settings.json")["refresh_token"])
                 
-                instruction = ttk.Button(commandbuttonframe, text="How to get cookie?", command=lambda: self.instructionwindow())
-                downloadSong = ttk.Button(commandbuttonframe, text="Download song")
+            
+            accessLabel.grid(row=0, column=0)
+            accessCookieEntry.grid(row=1, column=0)
+            refreshLabel.grid(row=2, column=0)
+            refreshCookieEntry.grid(row=3, column=0)
+            songlabel.grid(row=4, column=0)
+            songEntry.grid(row=5, column=0)
 
-                instruction.pack(side=tkinter.LEFT, padx=0, pady=0)
-                downloadSong.pack(side=tkinter.LEFT, padx=0, pady=0)
+            commandbuttonframe = ttk.Frame(newWindow)
+            commandbuttonframe.pack(side=tkinter.BOTTOM, padx=0, pady=0)
+            
+            instruction = ttk.Button(commandbuttonframe, text="How to get cookie?", command=lambda: self.instructionwindow())
+            downloadSong = ttk.Button(commandbuttonframe, text="Download song", command=downloadsong)
+
+            instruction.pack(side=tkinter.LEFT, padx=0, pady=0)
+            downloadSong.pack(side=tkinter.LEFT, padx=0, pady=0)
 
         def instructionwindow(self):
             global settings
             newWindow = tkinter.Toplevel(root)
             newWindow.title("Download song")
             if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
-                newWindow.overrideredirect(True)
+                newWindow.wm_attributes("-type", "utility")
 
             frame = ttk.Frame(newWindow)
             frame.pack(side=tkinter.TOP)
-            Disclaimer = ttk.Label(frame, text="DISCLAIMER: This will require usage of your session cookie on ai-midi.com.\nThis cookie should be different from your ACTUAL google account cookie (as noted in the README.md).\nThe developer has no access to the cookie you input into the programme.\nYou can check where the cookie is used and sent to (which is only sent to authenticate a request to upload your mp3 file to convert it to a mid file) as the programme is open source.\nIf you are not comfortable with this, do not use this feature. Thanks!", justify="center", foreground="red")
+            Disclaimer = ttk.Label(frame, text="DISCLAIMER: PLEASE READ THE README.md DISCLAIMER SECTION.\nIT IS INCREDIBLY IMPORTANT THAT YOU DO SO!", justify="center", foreground="red")
+            hyperlink = ttk.Label(frame, text = "1. Open your browser and go to ai-midi.com (click me!)", foreground="blue")
+            instructions = ttk.Label(frame, text="2. Log in with your Google account\n3. Once logged in open developer tools (or better known as inspect element)\n4. Head to the applications tab and navigate to Storage/Cookies and click on the only entry: https://ai-midi.com\n5. Copy the values of accessToken and refreshToken (you may need to refresh the site if the keys dont appear).\n6. Insert the values into the corresponding fields of the download window.\n7. Profit.", justify="center")
+            closeWindow = ttk.Button(frame, text="I understand, close this window", command=newWindow.destroy)
+            blank = ttk.Label(frame, text="")
+            
             Disclaimer.grid(row=0, column=0)
+            hyperlink.grid(row=1, column=0)
+            hyperlink.bind("<Button-1>", lambda e: subprocess.run(["xdg-open", "https://ai-midi.com"]))
+            instructions.grid(row=2, column=0)
+            blank.grid(row=3, column=0)
+            closeWindow.grid(row=4, column=0)
 
     currentStatus = ttk.Label(root, text=guiMethods().checksettingsqueue(), justify="center")
     dropdown = ttk.Combobox(root, values=NotImplemented)
