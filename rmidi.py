@@ -12,18 +12,18 @@ import shutil
 if __name__ == "__main__":
     print("This is a module silly")
 else:
-    class ExpireToken(Exception):
-        def __init__(self, message):
-            self.message = message
-            super().__init__(self.message)
-    class TokenNotFound(Exception):
-        def __init__(self, message):
-            self.message = message
-            super().__init__(self.message)
-    class MultipleSongsQueued(Exception):
-        def __init__(self, message):
-            self.message = message
-            super().__init__(self.message)
+    # class ExpireToken(Exception):
+    #     def __init__(self, message):
+    #         self.message = message
+    #         super().__init__(self.message)
+    # class TokenNotFound(Exception):
+    #     def __init__(self, message):
+    #         self.message = message
+    #         super().__init__(self.message)
+    # class MultipleSongsQueued(Exception):
+    #     def __init__(self, message):
+    #         self.message = message
+    #         super().__init__(self.message)
         
     class rmidi:
 
@@ -197,21 +197,25 @@ else:
                 for file in os.listdir(tmplocation): os.remove(os.path.join(tmplocation, file))
                 error_code = ydl.download(url)
 
-            cookiesdict = {"accessToken": cookie, "ch-session": cookie, "refreshToken": cookie}
+            cookiesdict = {"accessToken": cookie}
+            refreshdict = {"access_token": cookie, "token_type": "bearer"}
+
             URL = "https://api.ai-midi.com/api/v1/transcribe?bpm=120&beat=4&bar=4&input_method=upload"
             x = requests.post(URL, files={'input_audio': open(f'{tmplocation}/{os.listdir(tmplocation)[0]}', 'rb')}, cookies=cookiesdict)
-            print(x.text)
             try:
-                if x.json()["status"] == "Token expired":
-                    raise ExpireToken(x.json()["status"]) # Work on refreshing token later, for now manually refresh
-                elif x.json()["status"] == "Token not found":
-                    raise TokenNotFound(x.json()["status"])
-                elif x.json()["status"] == "Internal Server Error":
-                    os.remove(f"{tmplocation}/*")
-                    raise MultipleSongsQueued(f"{x.json()["status"]}. Try operation again")
+                request_id = x.json()['request_id']
             except:
-                pass
-            request_id = x.json()['request_id']
+                if x.json()["detail"] == "Token expired":
+                    print("Token expired, refreshing...")
+                    refreshrequest = requests.post("https://api.ai-midi.com/api/v1/auth/refresh", cookies=refreshdict)
+                    print("Refresh request sent.")
+                    x = requests.post(URL, files={'input_audio': open(f'{tmplocation}/{os.listdir(tmplocation)[0]}', 'rb')}, cookies=cookiesdict)
+                    request_id = x.json()['request_id']
+                elif x.json()["detail"] == "Token not found":
+                    pass
+                elif x.json()["detail"] == "Internal Server Error":
+                    os.remove(f"{tmplocation}/*")
+                    pass
             while True:
                 y = requests.get(f'https://api.ai-midi.com/api/v1/transcribe/status/{request_id}')
                 if y.json()['status'] == "completed":
