@@ -198,7 +198,11 @@ else:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 for file in os.listdir(tmplocation): os.remove(os.path.join(tmplocation, file))
                 self.downloadprogress = "Downloading song...\n"
-                error_code = ydl.download(url)
+                try:
+                    error_code = ydl.download(url)
+                except Exception as e:
+                    self.downloadprogress = f"[ERROR: {type(e).__name__}] An error has occured and the process can not continue."
+                    return 1
                 self.downloadprogress = "Song downloaded\n"
 
             cookiesdict = {"accessToken": cookie}
@@ -206,7 +210,11 @@ else:
 
             URL = "https://api.ai-midi.com/api/v1/transcribe?bpm=120&beat=4&bar=4&input_method=upload"
             self.downloadprogress = "Uploading song to ai-midi.com...\n"
-            x = requests.post(URL, files={'input_audio': open(f'{tmplocation}/{os.listdir(tmplocation)[0]}', 'rb')}, cookies=cookiesdict)
+            try:
+                x = requests.post(URL, files={'input_audio': open(f'{tmplocation}/{os.listdir(tmplocation)[0]}', 'rb')}, cookies=cookiesdict)
+            except Exception as e:
+                self.downloadprogress = f"[ERROR: {type(e).__name__}] An error has occured and the proccess can not continue."
+                return 1
             try:
                 request_id = x.json()['request_id']
             except:

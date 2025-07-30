@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     
 
-    t = threading.Thread(target=Rmidi.inputPlayback)
+    t = threading.Thread(target=Rmidi.inputPlayback, daemon=True)
     t.start()
 
     class guiMethods:
@@ -58,6 +58,9 @@ if __name__ == '__main__':
 
         def queueSong(self):
             global settings
+            if any(dropdown.get() == x for x in {"", "Select a file to play"}):
+                messagebox.showerror("Error", "You must select a valid .mid file to play")
+                return 1
             settings.queuedSong = dropdown.get()
             filechecker.FileChecker().write_settings(SETTINGS_FILE, ["lastsong", settings.queuedSong])
             currentStatus.config(text=f"Queued song: {settings.queuedSong}\nPress F8 to play.", justify="center")
@@ -111,6 +114,11 @@ if __name__ == '__main__':
                         if Rmidi.downloadprogress == "MIDI file downloaded successfully!\n":
                             progress.config(foreground="green")
                             button.config(state="normal")
+                            break
+                        if "ERROR" in Rmidi.downloadprogress:
+                            progress.config(foreground="red")
+                            button.config(state="normal")
+                            messagebox.showerror("Error", f"An error has occured and the process has to stop.\n{Rmidi.downloadprogress}")
                             break
                     
                 progress.grid(row=0)
