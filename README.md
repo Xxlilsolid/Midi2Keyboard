@@ -10,7 +10,9 @@
 Yes I know that there is other projects like this that performs a similar task, but I wanted to create my own because:
 
 A) Why not  
-B) To gain experience with Git and Python
+B) To gain experience with Git and Python  
+
+Oh and this project does feature one feature that isnt present with the other solutions... automatic song download and conversion from mp3 to mid!  
 
 ## System Requirements
 
@@ -64,6 +66,7 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [x] Get project working!
 - [x] Automagically create a music directory
 - [x] Persistent settings capabilities
+- [x] Kind of far fetched, but able to download .mid files to use with the programme
 - [ ] More transpostion options? (Idk if ive implemented it correctly)
 - [ ] GUI Overhaul
 - [ ] Build pre-built binaries. 
@@ -71,7 +74,6 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [ ] Auto updater for releases (and git)
 - [ ] Abide by the naming conventions
 - [ ] Ability to pause and unpause songs w/o stopping the whole song
-- [ ] Kind of far fetched, but able to download .mid files to use with the programme
 - [ ] PKGBUILD would be cool ig
 - [ ] Project logo for README and icon in bar
 - [ ] Exception handling (because its basically non existent lol)

@@ -83,11 +83,43 @@ if __name__ == '__main__':
             songlabel = ttk.Label(frame, text="Enter song URL from youtube (Piano covers are best)", justify="center")
             songEntry = ttk.Entry(frame, width=25)
 
-            def downloadsong():
+            def downloadsong(): # Opens GUI with progress
+                if accessCookieEntry.get() != '':
+                    filechecker.FileChecker().write_settings("settings.json", ["cookie", accessCookieEntry.get()])
+                if refreshCookieEntry.get() != '':
+                    filechecker.FileChecker().write_settings("settings.json", ["refresh_token", refreshCookieEntry.get()])
                 if songEntry.get() == '':
-                    messagebox.showerror("Error", "You must enter a song URL to download!")
+                    messagebox.showerror("Error", "You must enter a Youtube URL to download!")
                     return
-                Rmidi.downloadmid(songEntry.get(), "./tmp", filechecker.FileChecker().read_settings("settings.json")["cookie"], filechecker.FileChecker().read_settings("settings.json")["refresh_token"])
+                if all(x not in songEntry.get() for x in {"youtube", "youtu.be"}):
+                    messagebox.showerror("Error", "You must enter a Youtube URL to download!")
+                    return
+                if "radio" in songEntry.get():
+                    messagebox.showerror("Error", "Midi2Keyboard doesnt support mix/playlist links yet.")
+                    return
+                newWindow = tkinter.Toplevel(root)
+                if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
+                    newWindow.wm_attributes("-type", "utility")
+
+                progress = ttk.Label(newWindow, text="Starting operation\n", foreground='red')
+                button = ttk.Button(newWindow, text="Finished", state="disabled", command=lambda: newWindow.destroy())
+                
+                def callback():
+                    while True:
+                        sleep(1)
+                        progress.config(text=Rmidi.downloadprogress)
+                        if Rmidi.downloadprogress == "MIDI file downloaded successfully!\n":
+                            progress.config(foreground="green")
+                            button.config(state="normal")
+                            break
+                    
+                progress.grid(row=0)
+                button.grid(row=1)
+                thread = threading.Thread(target=Rmidi.downloadmid, args=(songEntry.get(), "./tmp", filechecker.FileChecker().read_settings("settings.json")["cookie"], filechecker.FileChecker().read_settings("settings.json")["refresh_token"]))
+                thread.start()
+                
+                callbackThread = threading.Thread(target=callback)
+                callbackThread.start()
                 
             
             accessLabel.grid(row=0, column=0)

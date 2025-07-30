@@ -184,7 +184,7 @@ else:
 
         
         def downloadmid(self, url, tmplocation, cookie, refreshtoken):
-            self.downloadprogress = "Preparing download..."
+            self.downloadprogress = "Preparing download...\n"
             ydl_opts = {
                 'format': 'mp3/bestaudio/best',
                 'outtmpl': f"{os.path.abspath(tmplocation)}/%(title)s.%(ext)s",  # Save to the specified location with the title as filename
@@ -197,26 +197,26 @@ else:
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 for file in os.listdir(tmplocation): os.remove(os.path.join(tmplocation, file))
-                self.downloadprogress = "Downloading song..."
+                self.downloadprogress = "Downloading song...\n"
                 error_code = ydl.download(url)
-                self.downloadprogress = "Song downloaded"
+                self.downloadprogress = "Song downloaded\n"
 
             cookiesdict = {"accessToken": cookie}
             refreshdict = {"refreshToken": refreshtoken}
 
             URL = "https://api.ai-midi.com/api/v1/transcribe?bpm=120&beat=4&bar=4&input_method=upload"
-            self.downloadprogress = "Uploading song to ai-midi.com..."
+            self.downloadprogress = "Uploading song to ai-midi.com...\n"
             x = requests.post(URL, files={'input_audio': open(f'{tmplocation}/{os.listdir(tmplocation)[0]}', 'rb')}, cookies=cookiesdict)
             try:
                 request_id = x.json()['request_id']
             except:
                 if x.json()["detail"] == "Token expired":
-                    self.downloadprogress = "Token expired, refreshing..."
+                    self.downloadprogress = "Token expired, refreshing...\n"
                     print("Token expired, refreshing...")
                     refreshrequest = requests.post("https://api.ai-midi.com/api/v1/auth/refresh", cookies=refreshdict)
                     filechecker.FileChecker().write_settings("settings.json", ["cookie", refreshrequest.json()["access_token"]])
                     print("Refreshed token and writen new token to settings.json")
-                    self.downloadprogress = "Refreshed token, retrying upload..."
+                    self.downloadprogress = "Refreshed token, retrying upload...\n"
                     x = requests.post(URL, files={'input_audio': open(f'{tmplocation}/{os.listdir(tmplocation)[0]}', 'rb')}, cookies={"accessToken": refreshrequest.json()["access_token"]})
                     request_id = x.json()['request_id']
                 elif x.json()["detail"] == "Token not found":
@@ -225,17 +225,17 @@ else:
                     os.remove(f"{tmplocation}/*")
                     pass
             while True:
-                self.downloadprogress = "Waiting for transcription to complete..."
+                self.downloadprogress = "Waiting for transcription to complete...\n"
                 y = requests.get(f'https://api.ai-midi.com/api/v1/transcribe/status/{request_id}')
                 if y.json()['status'] == "completed":
-                    self.downloadprogress = "Transcription completed, downloading MIDI file..."
+                    self.downloadprogress = "Transcription completed, downloading MIDI file...\n"
                     print("Transcription completed, downloading MIDI file...")
                     download_url = f"https://api.ai-midi.com/api/v1/transcribe/download/{request_id}"
                     z = requests.get(download_url)
                     with open(f"{tmplocation}/{os.listdir(tmplocation)[0][:-4]}.mid", 'wb') as f:
                         f.write(z.content)
                         shutil.move(f"{tmplocation}/{os.listdir(tmplocation)[0][:-4]}.mid", f"{os.path.abspath("./music")}/{os.listdir(tmplocation)[0][:-4]}.mid")
-                        self.downloadprogress = "MIDI file downloaded successfully!"
+                        self.downloadprogress = "MIDI file downloaded successfully!\n"
                         print("MIDI file downloaded successfully!")
                         break
                 sleep(5)
