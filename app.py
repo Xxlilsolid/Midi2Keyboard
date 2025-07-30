@@ -24,7 +24,7 @@ if __name__ == '__main__':
         root.wm_attributes("-type", "utility")
 
     filechecker.FileChecker().check_dir('./music', True)
-    if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: filechecker.FileChecker().generate_settings(SETTINGS_FILE, {"placeholder": 0})
+    if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: filechecker.FileChecker().generate_settings(SETTINGS_FILE, {"lastsong": "", "cookie": "", "refresh_token": ""})
 
     
 

@@ -217,21 +217,37 @@ else:
                 return 1
             try:
                 request_id = x.json()['request_id']
-            except:
+            except Exception as e:
                 if x.json()["detail"] == "Token expired":
                     self.downloadprogress = "Token expired, refreshing...\n"
                     print("Token expired, refreshing...")
-                    refreshrequest = requests.post("https://api.ai-midi.com/api/v1/auth/refresh", cookies=refreshdict)
+                    try:
+                        refreshrequest = requests.post("https://api.ai-midi.com/api/v1/auth/refresh", cookies=refreshdict)
+                    except Exception as e:
+                        self.downloadprogress = f"[ERROR: {e}]\nAn undocumented error has occured. Make sure that your refresh token is correct and try again. If it is still failing, make a bug report."
+                        return 1
                     filechecker.FileChecker().write_settings("settings.json", ["cookie", refreshrequest.json()["access_token"]])
                     print("Refreshed token and writen new token to settings.json")
                     self.downloadprogress = "Refreshed token, retrying upload...\n"
                     x = requests.post(URL, files={'input_audio': open(f'{tmplocation}/{os.listdir(tmplocation)[0]}', 'rb')}, cookies={"accessToken": refreshrequest.json()["access_token"]})
                     request_id = x.json()['request_id']
-                elif x.json()["detail"] == "Token not found":
-                    pass
+                
+                elif x.json()["detail"] == "Unauthorized":
+                    self.downloadprogress = f"[ERROR: {type(e).__name__}] No cookie was found. Please enter your cookie."
+                    return 1
+                
+                elif x.json()["detail"] == "Invalid token format":
+                    self.downloadprogress = f"[ERROR: {type(e).__name__}] Your cookie format is incorrect, please enter your cookie again."
+                    return 1
+                
                 elif x.json()["detail"] == "Internal Server Error":
                     os.remove(f"{tmplocation}/*")
                     pass
+                
+                else:
+                    self.downloadprogress = f"[ERROR: {e}]\nAn undocumented error has occured. Please open a bug report and wait for the developer to fix it."
+                    return 1
+            
             while True:
                 self.downloadprogress = "Waiting for transcription to complete...\n"
                 y = requests.get(f'https://api.ai-midi.com/api/v1/transcribe/status/{request_id}')
