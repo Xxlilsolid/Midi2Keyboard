@@ -5,6 +5,8 @@
 >
 >The feature requires inserting your ai-midi.com cookie to work properly. The cookie shouldnt correspond to your actual google account cookie (emphasis on the shouldn't, did slight testing to confirm that the cookie value didnt pop up on two sites). With that being said, the cookie is only used to authenticate conversions between .mp3 to .mid. Nothing more. Don't feel like you need to use the feature. You dont. If you have python knowledge but dont trust the programme, check the source code yourself. Nothing besides horribly edited code will be in there :)
 
+> [!IMPORTANT]
+> For whatever reason, you can't obtain the cookies you need from Firefox. It has to be done on a chromium based browser. I might've missed it though but I couldnt find it when I tested the programme on a fedora livecd.
 ## Why this when there is others like this?:
 
 Yes I know that there is other projects like this that performs a similar task, but I wanted to create my own because:
