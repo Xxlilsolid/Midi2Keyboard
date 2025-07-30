@@ -1,4 +1,4 @@
-# A MIRP Alternative for Linux!
+# Midi2Keyboard4Linux <sub>(or M2K4L)</sub>
 
 > [!CAUTION]
 > The feature "Download song" utilises ai-midi.com to convert a downloaded youtube song into a .mid to use with the programme.  
