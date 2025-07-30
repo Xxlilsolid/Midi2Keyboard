@@ -12,7 +12,7 @@ from tkinter import messagebox
 
 if __name__ == '__main__':
     root = tkinter.Tk()
-    root.title('Midi to Keystrokes for Linux')
+    root.title('M2K4L')
 
     Rmidi = rmidi.rmidi()
 
