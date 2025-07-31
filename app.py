@@ -8,13 +8,14 @@ import filechecker
 import os
 import subprocess
 from tkinter import messagebox
-
+import loggy
 
 if __name__ == '__main__':
     root = tkinter.Tk()
     root.title('M2K4L')
 
     Rmidi = rmidi.rmidi()
+    Log = loggy.Log('latest.log')
 
     SETTINGS_FILE = "settings.json"
     settings.DESKTOP_SESSION = subprocess.check_output("echo $DESKTOP_SESSION", shell=True, text=True).strip()

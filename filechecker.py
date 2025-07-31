@@ -12,9 +12,19 @@ else:
                 if mkdir:
                     os.makedirs(dir)
                 else:
-                    return [False, "Directory does not exist"]
-                return ["True", "Directory created"]
-            return ["True", "Directory exists"]
+                    return (False, "Directory does not exist")
+                return ("True", "Directory created")
+            return ("True", "Directory exists")
+        def check_file(self, file, mkfile):
+            dir = os.path.abspath(file)
+            if not os.path.exists(dir):
+                if mkfile:
+                    with open(file, "w") as file:
+                        file.write('')
+                else:
+                    return (False, "File does not exist")
+                return ("True", "File created")
+            return ("True", "File exists")
         def read_settings(self, settings_file):
             try:
                 with open(settings_file, 'r') as file:
