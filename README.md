@@ -1,5 +1,8 @@
 # Midi2Keyboard4Linux <sub>(or M2K4L)</sub>
 
+> [!NOTE]
+> This branch will be merged into main real soon. Im going to test weather the app works fine on a fedora live cd and will merge if everything is fine. If not, expect more commits after this one!
+
 > [!CAUTION]
 > The feature "Download song" utilises ai-midi.com to convert a downloaded youtube song into a .mid to use with the programme.  
 >
