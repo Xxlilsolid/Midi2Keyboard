@@ -7,6 +7,8 @@ import os
 import subprocess
 from tkinter import messagebox
 import loggy
+import rmidi
+import filechecker
 
 if __name__ == '__main__':
     root = tkinter.Tk()
@@ -14,8 +16,6 @@ if __name__ == '__main__':
 
 
     Log = loggy.Log(settings.LOGFILE)
-    import rmidi
-    import filechecker
     Rmidi = rmidi.rmidi()
 
     SETTINGS_FILE = "settings.json"
@@ -25,9 +25,9 @@ if __name__ == '__main__':
         Log.writelog("[INFO] Tiling window manager mode is active.", True)
         root.wm_attributes("-type", "utility")
 
-    filechecker.FileChecker().check_dir('./music', True)
+    Log.writelog(filechecker.FileChecker().check_dir('./music', True)[1], True)
     if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: filechecker.FileChecker().generate_settings(SETTINGS_FILE, {"lastsong": "", "cookie": "", "refresh_token": ""})
-    filechecker.FileChecker().check_dir("./tmp", True)
+    Log.writelog(filechecker.FileChecker().check_dir("./tmp", True)[1], True)
     
 
     t = threading.Thread(target=Rmidi.inputPlayback, daemon=True)
