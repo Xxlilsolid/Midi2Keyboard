@@ -7,7 +7,8 @@ if "__main__" == __name__:
 else:
     class Log:
         modulever = 0.1
-        digitconvert = {"1": "01",
+        digitconvert = {"0": "00",
+                        "1": "01",
                         "2": "02",
                         "3": "03",
                         "4": "04",
@@ -68,10 +69,12 @@ else:
                         "59": "59",
                         "60": "60"}
 
-        def __init__(self, filedir):
-            import filechecker
+        def __init__(self, filedir, editmode=False):
             self.__filedir = filedir
             self.__absfiledir = os.path.abspath(self.__filedir)
+            if editmode == True:
+                return
+            import filechecker
             filechecker.FileChecker().check_file('./logs', True)
             creationdate = datetime.datetime.now()
             if filechecker.FileChecker().check_file(self.__filedir, False)[0] == "True": # Renames
@@ -80,13 +83,14 @@ else:
                 filechecker.FileChecker().check_file(self.__filedir, True)
             else:  # Creates new file
                 filechecker.FileChecker().check_file(self.__filedir, True)
-            self.writelog({creationdate})
-            self.writelog(f"Loggy {self.modulever} has now been loaded")
+            self.writelog({creationdate}, False)
+            self.writelog(f"Loggy {self.modulever} has now been loaded", False)
 
             
-        def writelog(self, contents):
+        def writelog(self, contents, doprint=None):
             with open(self.__absfiledir, '+a') as file:
                 file.write(f"{contents}\n")
+            if doprint == True: print(contents)
             return 0
 
         def getheader(self): # Im going to sound incredibly stupid if this isnt what its called

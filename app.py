@@ -1,10 +1,8 @@
 import tkinter
 from tkinter import ttk
-import rmidi
 import threading
 from time import sleep
 import settings
-import filechecker
 import os
 import subprocess
 from tkinter import messagebox
@@ -14,14 +12,17 @@ if __name__ == '__main__':
     root = tkinter.Tk()
     root.title('M2K4L')
 
+
+    Log = loggy.Log(settings.LOGFILE)
+    import rmidi
+    import filechecker
     Rmidi = rmidi.rmidi()
-    Log = loggy.Log('latest.log')
 
     SETTINGS_FILE = "settings.json"
     settings.DESKTOP_SESSION = subprocess.check_output("echo $DESKTOP_SESSION", shell=True, text=True).strip()
 
     if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
-        print("Tiling window manager mode is active.")
+        Log.writelog("[INFO] Tiling window manager mode is active.", True)
         root.wm_attributes("-type", "utility")
 
     filechecker.FileChecker().check_dir('./music', True)
@@ -37,7 +38,6 @@ if __name__ == '__main__':
         def checksettingsqueue(self):
             global settings
             settingsdict = filechecker.FileChecker().read_settings(SETTINGS_FILE)
-            print(os.path.exists(f"./music/{settingsdict['lastsong']}"))
             try:
                 if os.path.exists(f"./music/{settingsdict['lastsong']}") == True and os.path.exists(f"./music/{settingsdict['lastsong']}") != '' and settings.queuedSong != '':
                     settings.queuedSong = settingsdict["lastsong"]
