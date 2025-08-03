@@ -25,7 +25,7 @@ Oh and this project does feature one feature that isnt present with the other so
 - The programme allows you to paste Youtube URLs of your favourite piano covers and converts them automatically using AI!
 
 ### Transposition modes
-- Switch between Nearest octave transposition with note clamping (transposition behaviour present before commit [52700e9](https://github.com/Xxlilsolid/Midi2Keyboard4Linux/commit/52700e925c4521084a84d4c429d0321021e1e02f) (which added both modes fully)) or use Octave clamped transposition.
+- Switch between Nearest octave transposition with note clamping (transposition behaviour present before commit [52700e9](https://github.com/Xxlilsolid/Midi2Keyboard4Linux/commit/52700e925c4521084a84d4c429d0321021e1e02f) (which truly added another transposition mode)) or use Octave clamped transposition.
 
 ### Sudo isn't required  
 - This project uses pynput which doesnt require sudo to run unlike pyautogui
