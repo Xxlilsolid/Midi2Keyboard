@@ -6,6 +6,7 @@ import settings
 import os
 import subprocess
 from tkinter import messagebox
+from tkinter import font
 import loggy
 import rmidi
 import filechecker
@@ -17,6 +18,7 @@ if __name__ == '__main__':
 
     Log = loggy.Log(settings.LOGFILE)
     Rmidi = rmidi.rmidi()
+    root.resizable(False, False)
 
     SETTINGS_FILE = "settings.json"
     settings.DESKTOP_SESSION = subprocess.check_output("echo $DESKTOP_SESSION", shell=True, text=True).strip()
@@ -25,15 +27,29 @@ if __name__ == '__main__':
         Log.writelog("[INFO] Tiling window manager mode is active.", True)
         root.wm_attributes("-type", "utility")
 
-    Log.writelog(filechecker.FileChecker().check_dir('./music', True)[1], True)
+    Log.writelog("[INFO] " + filechecker.FileChecker().check_dir('./music', True)[1], True)
     if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: filechecker.FileChecker().generate_settings(SETTINGS_FILE, {"lastsong": "", "cookie": "", "refresh_token": ""})
-    Log.writelog(filechecker.FileChecker().check_dir("./tmp", True)[1], True)
+    Log.writelog("[INFO] " + filechecker.FileChecker().check_dir("./tmp", True)[1], True)
+    Log.writelog(f"[INFO] M2K4L is on version {settings.APP_VER}", True)
     
 
     t = threading.Thread(target=Rmidi.inputPlayback, daemon=True)
     t.start()
 
     class guiMethods:
+        def settingsmenu(self):
+            newWindow = tkinter.Toplevel(root)
+            newWindow.resizable(False, False)
+            if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
+                newWindow.wm_attributes("-type", "utility")
+            transpositionLabel = ttk.Label(newWindow, text="Choose transposition mode")
+            transpositionDropdown = ttk.Combobox(newWindow, values=["Legacy", "Continous transposition"])
+            transpositionDropdown.set('Placeholder')
+            appVer = ttk.Label(newWindow, text=f"M2K4L: {settings.APP_VER}", foreground='grey', font=font.Font(size=8))
+
+            transpositionLabel.grid(row=0, column=0)
+            transpositionDropdown.grid(row=1, column=0)
+            appVer.grid(row=2, column=0)
 
         def checksettingsqueue(self):
             global settings
@@ -69,7 +85,8 @@ if __name__ == '__main__':
         def downloadsongwindow(self):
             global settings
             newWindow = tkinter.Toplevel(root)
-            newWindow.title("Download song")
+            newWindow.title("Song download options")
+            newWindow.resizable(False, False)
             if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
                 newWindow.wm_attributes("-type", "utility")
         
@@ -102,6 +119,8 @@ if __name__ == '__main__':
                     messagebox.showerror("Error", "Midi2Keyboard doesnt support mix/playlist links yet.")
                     return
                 newWindow = tkinter.Toplevel(root)
+                newWindow.title("Downloading song")
+                newWindow.resizable(False, False)
                 if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
                     newWindow.wm_attributes("-type", "utility")
 
@@ -173,7 +192,7 @@ if __name__ == '__main__':
     dropdown = ttk.Combobox(root, values=NotImplemented)
     playSong = ttk.Button(root, text="Play selected song", command=lambda: guiMethods().queueSong())
     downloadSong = ttk.Button(root, text="Download song", command=lambda: guiMethods().downloadsongwindow())
-    
+    options = ttk.Button(root, text="Options", command=lambda: guiMethods().settingsmenu())
     if not settings.queuedSong: dropdown.set("Select a file to play")
     else: dropdown.set(settings.queuedSong)
     dropdown.bind("<Button>", lambda event: guiMethods().makeList(event))
@@ -181,7 +200,8 @@ if __name__ == '__main__':
     dropdown.grid(row=1, column=0)
     currentStatus.grid(row=0, column=0)
     playSong.grid(row=2, column=0)
-    downloadSong.grid(row=3, column=0)
+    options.grid(row=3, column=0)
+    downloadSong.grid(row=4, column=0)
 
     
     root.mainloop()
