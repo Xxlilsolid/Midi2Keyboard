@@ -28,7 +28,7 @@ if __name__ == '__main__':
         root.wm_attributes("-type", "utility")
 
     Log.writelog("[INFO] " + filechecker.FileChecker().check_dir('./music', True)[1], True)
-    if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: filechecker.FileChecker().generate_settings(SETTINGS_FILE, {"lastsong": "", "cookie": "", "refresh_token": ""})
+    if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: filechecker.FileChecker().generate_settings(SETTINGS_FILE, {"lastsong": "", "cookie": "", "refresh_token": "", "transposition_mode": 1})
     Log.writelog("[INFO] " + filechecker.FileChecker().check_dir("./tmp", True)[1], True)
     Log.writelog(f"[INFO] M2K4L is on version {settings.APP_VER}", True)
     
@@ -37,19 +37,50 @@ if __name__ == '__main__':
     t.start()
 
     class guiMethods:
-        def settingsmenu(self):
+        def settingsmenu(self): # Transposition mode: 0 = Legacy 1 = Modern
             newWindow = tkinter.Toplevel(root)
+            frame = ttk.Frame(newWindow)
+            buttonFrame = ttk.Frame(newWindow)
+
             newWindow.resizable(False, False)
             if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
                 newWindow.wm_attributes("-type", "utility")
-            transpositionLabel = ttk.Label(newWindow, text="Choose transposition mode")
-            transpositionDropdown = ttk.Combobox(newWindow, values=["Legacy", "Continous transposition"])
-            transpositionDropdown.set('Placeholder')
-            appVer = ttk.Label(newWindow, text=f"M2K4L: {settings.APP_VER}", foreground='grey', font=font.Font(size=8))
 
-            transpositionLabel.grid(row=0, column=0)
+            def checklabeloption(dropdown):
+                settings = filechecker.FileChecker().read_settings("settings.json")
+                transpositionDropdownConvert = {0: "Legacy",
+                                                1: "Continous transposition"}
+                if dropdown == "transpositionDropdown":
+                    try:
+                        return transpositionDropdownConvert[settings["transposition_mode"]]
+                    except:
+                        filechecker.FileChecker().write_settings("settings.json", ["transposition_mode", 0])
+                        return "Legacy"
+
+            transpositionLabel = ttk.Label(frame, text="Choose transposition mode")
+            transpositionDropdown = ttk.Combobox(frame, values=["Legacy", "Continous transposition"], state="readonly")
+            transpositionDropdown.set(checklabeloption("transpositionDropdown"))
+            appVer = ttk.Label(newWindow, text=f"M2K4L: {settings.APP_VER}", foreground='grey', font=font.Font(size=8))
+            apply = ttk.Button(buttonFrame, text="Apply", command=lambda: writetooptions())
+            close = ttk.Button(buttonFrame, text="Ok", command=lambda: newWindow.destroy())
+
+            def writetooptions():
+                transpositionDropdownConvert = {"Legacy": 0,
+                                                "Continous transposition": 1}
+                if transpositionDropdown.get() == "Placeholder":
+                    pass
+                filechecker.FileChecker().write_settings("settings.json", ["transposition_mode", transpositionDropdownConvert[transpositionDropdown.get()]])
+                Log.writelog(f"[INFO] Saved transposition mode: {transpositionDropdown.get()}")
+            
+            transpositionLabel.grid(row=0, column=0) # frame 
             transpositionDropdown.grid(row=1, column=0)
-            appVer.grid(row=2, column=0)
+
+            apply.grid(row=0, column=0) # buttonFrame
+            close.grid(row=0, column=1)
+            
+            frame.pack(side=tkinter.TOP) # Everything else
+            buttonFrame.pack(side=tkinter.TOP)
+            appVer.pack(side=tkinter.TOP)
 
         def checksettingsqueue(self):
             global settings
@@ -189,7 +220,7 @@ if __name__ == '__main__':
             closeWindow.grid(row=4, column=0)
 
     currentStatus = ttk.Label(root, text=guiMethods().checksettingsqueue(), justify="center")
-    dropdown = ttk.Combobox(root, values=NotImplemented)
+    dropdown = ttk.Combobox(root, values=NotImplemented, state="readonly")
     playSong = ttk.Button(root, text="Play selected song", command=lambda: guiMethods().queueSong())
     downloadSong = ttk.Button(root, text="Download song", command=lambda: guiMethods().downloadsongwindow())
     options = ttk.Button(root, text="Options", command=lambda: guiMethods().settingsmenu())
