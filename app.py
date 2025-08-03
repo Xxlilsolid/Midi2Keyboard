@@ -48,25 +48,25 @@ if __name__ == '__main__':
 
             def checklabeloption(dropdown):
                 settings = filechecker.FileChecker().read_settings("settings.json")
-                transpositionDropdownConvert = {0: "Legacy",
-                                                1: "Continous transposition"}
+                transpositionDropdownConvert = {0: "Nearest octave transposition with note clamping",
+                                                1: "Octave clamped Transposition"}
                 if dropdown == "transpositionDropdown":
                     try:
                         return transpositionDropdownConvert[settings["transposition_mode"]]
                     except:
                         filechecker.FileChecker().write_settings("settings.json", ["transposition_mode", 0])
-                        return "Legacy"
+                        return "Nearest octave transposition with note clamping"
 
             transpositionLabel = ttk.Label(frame, text="Choose transposition mode")
-            transpositionDropdown = ttk.Combobox(frame, values=["Legacy", "Continous transposition"], state="readonly")
+            transpositionDropdown = ttk.Combobox(frame, values=["Nearest octave transposition with note clamping", "Octave clamped Transposition"], state="readonly", width=40)
             transpositionDropdown.set(checklabeloption("transpositionDropdown"))
             appVer = ttk.Label(newWindow, text=f"M2K4L: {settings.APP_VER}", foreground='grey', font=font.Font(size=8))
             apply = ttk.Button(buttonFrame, text="Apply", command=lambda: writetooptions())
             close = ttk.Button(buttonFrame, text="Ok", command=lambda: newWindow.destroy())
 
             def writetooptions():
-                transpositionDropdownConvert = {"Legacy": 0,
-                                                "Continous transposition": 1}
+                transpositionDropdownConvert = {"Nearest octave transposition with note clamping": 0,
+                                                "Octave clamped Transposition": 1}
                 if transpositionDropdown.get() == "Placeholder":
                     pass
                 filechecker.FileChecker().write_settings("settings.json", ["transposition_mode", transpositionDropdownConvert[transpositionDropdown.get()]])

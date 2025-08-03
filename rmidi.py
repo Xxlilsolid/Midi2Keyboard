@@ -113,6 +113,7 @@ else:
                                     settings.toggleplay = 0
                                     settings.currentsong = settings.queuedSong
                                     break
+                                modeselection = filechecker.FileChecker().read_settings("settings.json")["transposition_mode"]
                                 for msg in mido.MidiFile(f"./music/{settings.currentsong}").play():
                                     if settings.toggleplay == 0:
                                         break
@@ -121,18 +122,32 @@ else:
                                     except:
                                         pass
                                     if msg.type == 'note_on':
-                                        if 96 < note <= 109:
-                                            print("transposed")
-                                            note = note - 12
-                                        elif 36 > note >= 24:
-                                            print("transposed")
-                                            note = note + 12
-                                        elif note > 109:
-                                            print("transposed")
-                                            note = 96
-                                        elif note < 24:
-                                            print("transposed")
-                                            note = 36
+                                        if modeselection == 0:
+                                            if 96 < note <= 109:
+                                                print("transposed")
+                                                note = note - 12
+                                            elif 36 > note >= 24:
+                                                print("transposed")
+                                                note = note + 12
+                                            elif note > 109:
+                                                print("transposed")
+                                                note = 96
+                                            elif note < 24:
+                                                print("transposed")
+                                                note = 36
+                                        elif modeselection == 1:
+                                            if note > 96:
+                                                while True:
+                                                    note = note - 12
+                                                    if note <= 96:
+                                                        print("transposed")
+                                                        break
+                                            elif note < 36:
+                                                while True:
+                                                    note = note + 12
+                                                    if note >= 36:
+                                                        print("transposed")
+                                                        break
                                         if self.keymap[note].isupper():
                                             with ckeyboard.pressed(Key.shift):
                                                 ckeyboard.press(self.keymap[note]) # For uppercase
