@@ -61,6 +61,20 @@ Run the python script or executable
 Put your glorious .mid files in the newly created "music" file.  
 Follow the steps on the GUI.
 
+## Features  
+
+### Play your favourite piano covers
+- Play your piano covers on Roblox and games/websites which support playing the piano on a PC Keyboard
+
+### Download music via Youtube and convert them to .mid via ai-midi.com
+- The programme allows you to paste Youtube URLs of your favourite piano covers and converts them automatically using AI!
+
+### Transposition modes
+- Switch between Nearest octave transposition with note clamping (transposition behaviour present before commit [52700e9](https://github.com/Xxlilsolid/Midi2Keyboard4Linux/commit/52700e925c4521084a84d4c429d0321021e1e02f) (which added both modes fully)) or use Octave clamped transposition.
+
+### Sudo isn't required  
+- This project uses pynput which doesnt require sudo to run unlike pyautogui
+
 ## Future plans
 
 Once I get the project to where I am satisfied, I will probably stop maintaining the project. Anyways, here is my todo on the project thus far (in no particular order btw)!
