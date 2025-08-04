@@ -21,14 +21,33 @@ if __name__ == '__main__':
     root.resizable(False, False)
 
     SETTINGS_FILE = "settings.json"
-    settings.DESKTOP_SESSION = subprocess.check_output("echo $DESKTOP_SESSION", shell=True, text=True).strip()
+    DEFAULT_SETTINGS = {"lastsong": "", 
+                        "cookie": "", 
+                        "refresh_token": "", 
+                        "transposition_mode": 1, 
+                        "theme": 2}
+    COLOUR_PALETTE = {0: "#d9d9d9",
+                      1: "#525252",
+                      2: "#525252"}
+    settings.desktop_session = subprocess.check_output("echo $DESKTOP_SESSION", shell=True, text=True).strip()
 
-    if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
+    if settings.desktop_session in {"hyprland", "sway", "i3"}:
         Log.writelog("[INFO] Tiling window manager mode is active.", True)
         root.wm_attributes("-type", "utility")
 
     Log.writelog("[INFO] " + filechecker.FileChecker().check_dir('./music', True)[1], True)
-    if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: filechecker.FileChecker().generate_settings(SETTINGS_FILE, {"lastsong": "", "cookie": "", "refresh_token": "", "transposition_mode": 1})
+    if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: 
+        filechecker.FileChecker().generate_settings(SETTINGS_FILE, DEFAULT_SETTINGS) # Generates settings
+    else:# Integrity check of settings.json
+        startUpSettingsJson = filechecker.FileChecker().read_settings(SETTINGS_FILE) 
+        for key in DEFAULT_SETTINGS.keys():
+            try:
+                startUpSettingsJson[key]
+            except:
+                Log.writelog(f"[WARNING] The key {key} is not present in {SETTINGS_FILE}. Defaulting to pair {key}: {DEFAULT_SETTINGS[key]}", True)
+                filechecker.FileChecker().write_settings(SETTINGS_FILE, [key, DEFAULT_SETTINGS[key]])  
+    theme = COLOUR_PALETTE[startUpSettingsJson["theme"]]
+
     Log.writelog("[INFO] " + filechecker.FileChecker().check_dir("./tmp", True)[1], True)
     Log.writelog(f"[INFO] M2K4L is on version {settings.APP_VER}", True)
     
@@ -43,40 +62,78 @@ if __name__ == '__main__':
             buttonFrame = ttk.Frame(newWindow)
 
             newWindow.resizable(False, False)
-            if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
+            if settings.desktop_session in {"hyprland", "sway", "i3"}:
                 newWindow.wm_attributes("-type", "utility")
 
             def checklabeloption(dropdown):
                 settings = filechecker.FileChecker().read_settings("settings.json")
                 transpositionDropdownConvert = {0: "Nearest octave transposition with note clamping",
                                                 1: "Octave clamped Transposition"}
+                themeDropdownConvert = {0: "Light mode",
+                                        1: "Dark mode",
+                                        2: "System default"}
                 if dropdown == "transpositionDropdown":
                     try:
                         return transpositionDropdownConvert[settings["transposition_mode"]]
                     except:
                         filechecker.FileChecker().write_settings("settings.json", ["transposition_mode", 0])
                         return "Nearest octave transposition with note clamping"
+                elif dropdown == "theme":
+                    try:
+                        return themeDropdownConvert[settings["theme"]]
+                    except:
+                        filechecker.FileChecker().write_settings("settings.json", ["theme", 2])
+                        return "System default"
 
             transpositionLabel = ttk.Label(frame, text="Choose transposition mode")
             transpositionDropdown = ttk.Combobox(frame, values=["Nearest octave transposition with note clamping", "Octave clamped Transposition"], state="readonly", width=40)
+            themeLabel = ttk.Label(frame, text="Choose a theme")
+            themeDropdown = ttk.Combobox(frame, values=["Light mode", "Dark mode", "System default"], state="readonly")
             transpositionDropdown.set(checklabeloption("transpositionDropdown"))
+            themeDropdown.set(checklabeloption("theme"))
+            
             appVer = ttk.Label(newWindow, text=f"M2K4L: {settings.APP_VER}", foreground='grey', font=font.Font(size=8))
+            checkUpdate = ttk.Button(buttonFrame, text=f"Check updates", state="disabled")
+            changeKeyboardLayout = ttk.Button(buttonFrame, text="Change Keyboard layout")
             apply = ttk.Button(buttonFrame, text="Apply", command=lambda: writetooptions())
             close = ttk.Button(buttonFrame, text="Ok", command=lambda: newWindow.destroy())
 
             def writetooptions():
                 transpositionDropdownConvert = {"Nearest octave transposition with note clamping": 0,
                                                 "Octave clamped Transposition": 1}
-                if transpositionDropdown.get() == "Placeholder":
-                    pass
+                themeDropdownConvert = {"Light mode": 0,
+                                        "Dark mode": 1,
+                                        "System default": 2}
                 filechecker.FileChecker().write_settings("settings.json", ["transposition_mode", transpositionDropdownConvert[transpositionDropdown.get()]])
+                filechecker.FileChecker().write_settings("settings.json", ["theme", themeDropdownConvert[themeDropdown.get()]])
+                root.configure(background=COLOUR_PALETTE[themeDropdownConvert[themeDropdown.get()]])
+                extras = [root]
+                while True:
+                    extras[0].configure(background=COLOUR_PALETTE[themeDropdownConvert[themeDropdown.get()]])
+                    for i in extras[0].winfo_children():
+                        if any(x in i.__class__.__name__ for x in {"Toplevel", "Frame"}):
+                            extras.append(i)
+                        else:
+                            try:
+                                i.configure(background=COLOUR_PALETTE[themeDropdownConvert[themeDropdown.get()]])
+                            except Exception as e:
+                                print(i)
+                                print(e)
+                    extras.pop(0)
+                    if extras == []:
+                        break
                 Log.writelog(f"[INFO] Saved transposition mode: {transpositionDropdown.get()}")
+                Log.writelog(f"[INFO] Saved theme: {themeDropdown.get()}")
             
-            transpositionLabel.grid(row=0, column=0) # frame 
+            transpositionLabel.grid(row=0, column=0) # options 
             transpositionDropdown.grid(row=1, column=0)
+            themeLabel.grid(row=2, column=0)
+            themeDropdown.grid(row=3, column=0)
 
-            apply.grid(row=0, column=0) # buttonFrame
-            close.grid(row=0, column=1)
+            checkUpdate.grid(row=0, column=0) #buttonFrame
+            changeKeyboardLayout.grid(row=0, column=1)
+            close.grid(row=0, column=2)
+            apply.grid(row=0, column=3) 
             
             frame.pack(side=tkinter.TOP) # Everything else
             buttonFrame.pack(side=tkinter.TOP)
@@ -118,7 +175,7 @@ if __name__ == '__main__':
             newWindow = tkinter.Toplevel(root)
             newWindow.title("Song download options")
             newWindow.resizable(False, False)
-            if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
+            if settings.desktop_session in {"hyprland", "sway", "i3"}:
                 newWindow.wm_attributes("-type", "utility")
         
             frame = ttk.Frame(newWindow)
@@ -152,7 +209,7 @@ if __name__ == '__main__':
                 newWindow = tkinter.Toplevel(root)
                 newWindow.title("Downloading song")
                 newWindow.resizable(False, False)
-                if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
+                if settings.desktop_session in {"hyprland", "sway", "i3"}:
                     newWindow.wm_attributes("-type", "utility")
 
                 progress = ttk.Label(newWindow, text="Starting operation\n", foreground='red')
@@ -201,7 +258,7 @@ if __name__ == '__main__':
             global settings
             newWindow = tkinter.Toplevel(root)
             newWindow.title("Download song")
-            if settings.DESKTOP_SESSION in {"hyprland", "sway", "i3"}:
+            if settings.desktop_session in {"hyprland", "sway", "i3"}:
                 newWindow.wm_attributes("-type", "utility")
 
             frame = ttk.Frame(newWindow)

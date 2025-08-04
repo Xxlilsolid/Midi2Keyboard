@@ -4,6 +4,6 @@ queuedSongList = []
 queuedSong = ''
 finishedLoading = False
 toggleplay = 0
-DESKTOP_SESSION = ''
+desktop_session = ''
 LOGFILE = './logs/latest.log'
 APP_VER = str(subprocess.check_output(["git", "rev-parse", "--short", 'HEAD']).strip())[2:-1]
