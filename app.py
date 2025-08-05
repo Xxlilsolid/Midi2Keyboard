@@ -58,8 +58,8 @@ if __name__ == '__main__':
     class guiMethods:
         def settingsmenu(self): # Transposition mode: 0 = Legacy 1 = Modern
             newWindow = tkinter.Toplevel(root)
-            frame = ttk.Frame(newWindow)
-            buttonFrame = ttk.Frame(newWindow)
+            frame = tkinter.Frame(newWindow)
+            buttonFrame = tkinter.Frame(newWindow)
 
             newWindow.resizable(False, False)
             if settings.desktop_session in {"hyprland", "sway", "i3"}:
