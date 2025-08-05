@@ -27,12 +27,14 @@ if __name__ == '__main__':
                         "transposition_mode": 1, 
                         "theme": 2}
     #https://htmlcolorcodes.com/
-    COLOUR_PALETTE = {0: "#d9d9d9",
+    COLOUR_PALETTE = {0: {"background": "#d9d9d9",
+                          "buttonBackground": "#d9d9d9",
+                          "buttonHover": "#ECECEC",
+                          "label": "black"},
                       1: {"background": "#525252",
-                          "buttonBackground": "#696969", #Shift Left 1
+                          "buttonBackground": "#525252", #Shift Left 1
                           "buttonHover": "#808080", # Shift Left 2
-                          "label": "#F2F2F2"}, # Far left
-                      2: "#525252"}
+                          "label": "#F2F2F2"}}# Far left
     settings.desktop_session = subprocess.check_output("echo $DESKTOP_SESSION", shell=True, text=True).strip()
 
     if settings.desktop_session in {"hyprland", "sway", "i3"}:
