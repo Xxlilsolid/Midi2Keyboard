@@ -26,8 +26,12 @@ if __name__ == '__main__':
                         "refresh_token": "", 
                         "transposition_mode": 1, 
                         "theme": 2}
+    #https://htmlcolorcodes.com/
     COLOUR_PALETTE = {0: "#d9d9d9",
-                      1: "#525252",
+                      1: {"background": "#525252",
+                          "buttonBackground": "#696969", #Shift Left 1
+                          "buttonHover": "#808080", # Shift Left 2
+                          "label": "#F2F2F2"}, # Far left
                       2: "#525252"}
     settings.desktop_session = subprocess.check_output("echo $DESKTOP_SESSION", shell=True, text=True).strip()
 
@@ -46,20 +50,29 @@ if __name__ == '__main__':
             except:
                 Log.writelog(f"[WARNING] The key {key} is not present in {SETTINGS_FILE}. Defaulting to pair {key}: {DEFAULT_SETTINGS[key]}", True)
                 filechecker.FileChecker().write_settings(SETTINGS_FILE, [key, DEFAULT_SETTINGS[key]])  
-    theme = COLOUR_PALETTE[startUpSettingsJson["theme"]]
-
+    
+    currentTheme = filechecker.FileChecker().read_settings(SETTINGS_FILE)["theme"]
+    root.configure(background=COLOUR_PALETTE[currentTheme]["background"])
+   
+    style = ttk.Style()
+    style.theme_use("clam")
+    style.configure("Theme.TButton", background=COLOUR_PALETTE[currentTheme]["buttonBackground"], foreground=COLOUR_PALETTE[currentTheme]["label"])
+    style.configure("Theme.TLabel", background=COLOUR_PALETTE[currentTheme]["background"], foreground=COLOUR_PALETTE[currentTheme]["label"])
+    style.configure("SpecialTheme.TLabel", background=COLOUR_PALETTE[currentTheme]["background"])
+    style.map("Theme.TButton", background=[("hover", COLOUR_PALETTE[currentTheme]["buttonHover"])])
     Log.writelog("[INFO] " + filechecker.FileChecker().check_dir("./tmp", True)[1], True)
     Log.writelog(f"[INFO] M2K4L is on version {settings.APP_VER}", True)
     
+# End of initialisation of programme
 
     t = threading.Thread(target=Rmidi.inputPlayback, daemon=True)
     t.start()
 
     class guiMethods:
         def settingsmenu(self): # Transposition mode: 0 = Legacy 1 = Modern
-            newWindow = tkinter.Toplevel(root)
-            frame = tkinter.Frame(newWindow)
-            buttonFrame = tkinter.Frame(newWindow)
+            newWindow = tkinter.Toplevel(root, background=COLOUR_PALETTE[currentTheme]["background"])
+            frame = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
+            buttonFrame = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
 
             newWindow.resizable(False, False)
             if settings.desktop_session in {"hyprland", "sway", "i3"}:
@@ -85,18 +98,18 @@ if __name__ == '__main__':
                         filechecker.FileChecker().write_settings("settings.json", ["theme", 2])
                         return "System default"
 
-            transpositionLabel = ttk.Label(frame, text="Choose transposition mode")
+            transpositionLabel = ttk.Label(frame, text="Choose transposition mode", style="Theme.TLabel")
             transpositionDropdown = ttk.Combobox(frame, values=["Nearest octave transposition with note clamping", "Octave clamped Transposition"], state="readonly", width=40)
-            themeLabel = ttk.Label(frame, text="Choose a theme")
+            themeLabel = ttk.Label(frame, text="Choose a theme", style="Theme.TLabel")
             themeDropdown = ttk.Combobox(frame, values=["Light mode", "Dark mode", "System default"], state="readonly")
             transpositionDropdown.set(checklabeloption("transpositionDropdown"))
             themeDropdown.set(checklabeloption("theme"))
             
-            appVer = ttk.Label(newWindow, text=f"M2K4L: {settings.APP_VER}", foreground='grey', font=font.Font(size=8))
-            checkUpdate = ttk.Button(buttonFrame, text=f"Check updates", state="disabled")
-            changeKeyboardLayout = ttk.Button(buttonFrame, text="Change Keyboard layout")
-            apply = ttk.Button(buttonFrame, text="Apply", command=lambda: writetooptions())
-            close = ttk.Button(buttonFrame, text="Ok", command=lambda: newWindow.destroy())
+            appVer = ttk.Label(newWindow, text=f"M2K4L: {settings.APP_VER}", foreground='grey', font=font.Font(size=8), style="SpecialTheme.TLabel")
+            checkUpdate = ttk.Button(buttonFrame, text=f"Check updates", state="disabled", style="Theme.TButton")
+            changeKeyboardLayout = ttk.Button(buttonFrame, text="Change Keyboard layout", style="Theme.TButton")
+            apply = ttk.Button(buttonFrame, text="Apply", command=lambda: writetooptions(), style="Theme.TButton")
+            close = ttk.Button(buttonFrame, text="Ok", command=lambda: newWindow.destroy(), style="Theme.TButton")
 
             def writetooptions():
                 transpositionDropdownConvert = {"Nearest octave transposition with note clamping": 0,
@@ -106,16 +119,22 @@ if __name__ == '__main__':
                                         "System default": 2}
                 filechecker.FileChecker().write_settings("settings.json", ["transposition_mode", transpositionDropdownConvert[transpositionDropdown.get()]])
                 filechecker.FileChecker().write_settings("settings.json", ["theme", themeDropdownConvert[themeDropdown.get()]])
-                root.configure(background=COLOUR_PALETTE[themeDropdownConvert[themeDropdown.get()]])
+                root.configure(background=COLOUR_PALETTE[themeDropdownConvert[themeDropdown.get()]]["background"])
+                global currentTheme
+                currentTheme = themeDropdownConvert[themeDropdown.get()]
+                style.configure("Theme.TButton", background=COLOUR_PALETTE[currentTheme]["buttonBackground"], foreground=COLOUR_PALETTE[currentTheme]["label"])
+                style.configure("Theme.TLabel", background=COLOUR_PALETTE[currentTheme]["background"], foreground=COLOUR_PALETTE[currentTheme]["label"])
+                style.configure("SpecialTheme.TLabel", background=COLOUR_PALETTE[currentTheme]["background"])
+                style.map("Theme.TButton", background=[("active", COLOUR_PALETTE[currentTheme]["buttonHover"])])
                 extras = [root]
                 while True:
-                    extras[0].configure(background=COLOUR_PALETTE[themeDropdownConvert[themeDropdown.get()]])
+                    extras[0].configure(background=COLOUR_PALETTE[themeDropdownConvert[themeDropdown.get()]]["background"])
                     for i in extras[0].winfo_children():
                         if any(x in i.__class__.__name__ for x in {"Toplevel", "Frame"}):
                             extras.append(i)
                         else:
                             try:
-                                i.configure(background=COLOUR_PALETTE[themeDropdownConvert[themeDropdown.get()]])
+                                i.configure(background=COLOUR_PALETTE[themeDropdownConvert[themeDropdown.get()]]["background"])
                             except Exception as e:
                                 print(i)
                                 print(e)
@@ -172,24 +191,24 @@ if __name__ == '__main__':
 
         def downloadsongwindow(self):
             global settings
-            newWindow = tkinter.Toplevel(root)
+            newWindow = tkinter.Toplevel(root, background=COLOUR_PALETTE[currentTheme]["background"])
             newWindow.title("Song download options")
             newWindow.resizable(False, False)
             if settings.desktop_session in {"hyprland", "sway", "i3"}:
                 newWindow.wm_attributes("-type", "utility")
         
-            frame = ttk.Frame(newWindow)
+            frame = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
             frame.pack(side=tkinter.TOP,padx=0, pady=0)
 
-            accessLabel = ttk.Label(frame, text="Add your access token here", justify="center")
+            accessLabel = ttk.Label(frame, text="Add your access token here", justify="center", style="Theme.TLabel")
             accessCookieEntry = ttk.Entry(frame, width=25)
             if filechecker.FileChecker().read_settings(SETTINGS_FILE)["cookie"] != '':
                 accessLabel.config(text="Access token already set, you can change it here")
-            refreshLabel = ttk.Label(frame, text="Add your refresh token here", justify="center")
+            refreshLabel = ttk.Label(frame, text="Add your refresh token here", justify="center", style="Theme.TLabel")
             refreshCookieEntry = ttk.Entry(frame, width=25)
             if filechecker.FileChecker().read_settings(SETTINGS_FILE)["refresh_token"] != '':
                 refreshLabel.config(text="Refresh token already set, you can change it here")
-            songlabel = ttk.Label(frame, text="Enter song URL from youtube (Piano covers are best)", justify="center")
+            songlabel = ttk.Label(frame, text="Enter song URL from youtube (Piano covers are best)", justify="center", style="Theme.TLabel")
             songEntry = ttk.Entry(frame, width=25)
 
             def downloadsong(): # Opens GUI with progress
@@ -206,14 +225,14 @@ if __name__ == '__main__':
                 if "radio" in songEntry.get():
                     messagebox.showerror("Error", "Midi2Keyboard doesnt support mix/playlist links yet.")
                     return
-                newWindow = tkinter.Toplevel(root)
+                newWindow = tkinter.Toplevel(root, background=COLOUR_PALETTE[currentTheme]["background"])
                 newWindow.title("Downloading song")
                 newWindow.resizable(False, False)
                 if settings.desktop_session in {"hyprland", "sway", "i3"}:
                     newWindow.wm_attributes("-type", "utility")
 
-                progress = ttk.Label(newWindow, text="Starting operation\n", foreground='red')
-                button = ttk.Button(newWindow, text="Finished", state="disabled", command=lambda: newWindow.destroy())
+                progress = ttk.Label(newWindow, text="Starting operation\n", foreground='red', style="SpecialTheme.TLabel")
+                button = ttk.Button(newWindow, text="Finished", state="disabled", command=lambda: newWindow.destroy(), style="Theme.TButton")
                 
                 def callback():
                     while True:
@@ -245,29 +264,29 @@ if __name__ == '__main__':
             songlabel.grid(row=4, column=0)
             songEntry.grid(row=5, column=0)
 
-            commandbuttonframe = ttk.Frame(newWindow)
+            commandbuttonframe = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
             commandbuttonframe.pack(side=tkinter.BOTTOM, padx=0, pady=0)
             
-            instruction = ttk.Button(commandbuttonframe, text="How to get cookie?", command=lambda: self.instructionwindow())
-            downloadSong = ttk.Button(commandbuttonframe, text="Download song", command=downloadsong)
+            instruction = ttk.Button(commandbuttonframe, text="How to get cookie?", command=lambda: self.instructionwindow(), style="Theme.TButton")
+            downloadSong = ttk.Button(commandbuttonframe, text="Download song", command=downloadsong, style="Theme.TButton")
 
             instruction.pack(side=tkinter.LEFT, padx=0, pady=0)
             downloadSong.pack(side=tkinter.LEFT, padx=0, pady=0)
 
         def instructionwindow(self):
             global settings
-            newWindow = tkinter.Toplevel(root)
+            newWindow = tkinter.Toplevel(root, background=COLOUR_PALETTE[currentTheme]["background"])
             newWindow.title("Download song")
             if settings.desktop_session in {"hyprland", "sway", "i3"}:
                 newWindow.wm_attributes("-type", "utility")
 
-            frame = ttk.Frame(newWindow)
+            frame = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
             frame.pack(side=tkinter.TOP)
-            Disclaimer = ttk.Label(frame, text="DISCLAIMER: PLEASE READ THE README.md DISCLAIMER SECTION.\nIT IS INCREDIBLY IMPORTANT THAT YOU DO SO!", justify="center", foreground="red")
-            hyperlink = ttk.Label(frame, text = "1. Open your browser and go to ai-midi.com (click me!)", foreground="blue")
-            instructions = ttk.Label(frame, text="2. Log in with your Google account\n3. Once logged in open developer tools (or better known as inspect element)\n4. Head to the applications tab and navigate to Storage/Cookies and click on the only entry: https://ai-midi.com\n5. Copy the values of accessToken and refreshToken (you may need to refresh the site if the keys dont appear).\n6. Insert the values into the corresponding fields of the download window.\n7. Profit.", justify="center")
-            closeWindow = ttk.Button(frame, text="I understand, close this window", command=newWindow.destroy)
-            blank = ttk.Label(frame, text="")
+            Disclaimer = ttk.Label(frame, text="DISCLAIMER: PLEASE READ THE README.md DISCLAIMER SECTION.\nIT IS INCREDIBLY IMPORTANT THAT YOU DO SO!", justify="center", foreground="red", style="SpecialTheme.TLabel")
+            hyperlink = ttk.Label(frame, text = "1. Open your browser and go to ai-midi.com (click me!)", foreground="blue", style="SpecialTheme.TLabel")
+            instructions = ttk.Label(frame, text="2. Log in with your Google account\n3. Once logged in open developer tools (or better known as inspect element)\n4. Head to the applications tab and navigate to Storage/Cookies and click on the only entry: https://ai-midi.com\n5. Copy the values of accessToken and refreshToken (you may need to refresh the site if the keys dont appear).\n6. Insert the values into the corresponding fields of the download window.\n7. Profit.", justify="center", style="Theme.TLabel")
+            closeWindow = ttk.Button(frame, text="I understand, close this window", command=newWindow.destroy, style="Theme.TButton")
+            blank = ttk.Label(frame, text="", style="Theme.TLabel")
             
             Disclaimer.grid(row=0, column=0)
             hyperlink.grid(row=1, column=0)
@@ -276,11 +295,11 @@ if __name__ == '__main__':
             blank.grid(row=3, column=0)
             closeWindow.grid(row=4, column=0)
 
-    currentStatus = ttk.Label(root, text=guiMethods().checksettingsqueue(), justify="center")
+    currentStatus = ttk.Label(root, text=guiMethods().checksettingsqueue(), justify="center", style="Theme.TLabel")
     dropdown = ttk.Combobox(root, values=NotImplemented, state="readonly")
-    playSong = ttk.Button(root, text="Play selected song", command=lambda: guiMethods().queueSong())
-    downloadSong = ttk.Button(root, text="Download song", command=lambda: guiMethods().downloadsongwindow())
-    options = ttk.Button(root, text="Options", command=lambda: guiMethods().settingsmenu())
+    playSong = ttk.Button(root, text="Play selected song", command=lambda: guiMethods().queueSong(), style="Theme.TButton")
+    downloadSong = ttk.Button(root, text="Download song", command=lambda: guiMethods().downloadsongwindow(), style="Theme.TButton")
+    options = ttk.Button(root, text="Options", command=lambda: guiMethods().settingsmenu(), style="Theme.TButton")
     if not settings.queuedSong: dropdown.set("Select a file to play")
     else: dropdown.set(settings.queuedSong)
     dropdown.bind("<Button>", lambda event: guiMethods().makeList(event))
