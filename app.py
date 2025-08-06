@@ -52,8 +52,14 @@ if __name__ == '__main__':
             except:
                 Log.writelog(f"[WARNING] The key {key} is not present in {SETTINGS_FILE}. Defaulting to pair {key}: {DEFAULT_SETTINGS[key]}", True)
                 filechecker.FileChecker().write_settings(SETTINGS_FILE, [key, DEFAULT_SETTINGS[key]])  
-    
-    currentTheme = filechecker.FileChecker().read_settings(SETTINGS_FILE)["theme"]
+    if filechecker.FileChecker().read_settings(SETTINGS_FILE)["theme"] == 2:
+        currentTheme = str(subprocess.check_output(["gsettings", "get", "org.gnome.desktop.interface", "color-scheme"]))
+        if "dark" in currentTheme.lower():
+            currentTheme = 1
+        else:
+            currentTheme = 0
+    else:
+        currentTheme = filechecker.FileChecker().read_settings(SETTINGS_FILE)["theme"]
     root.configure(background=COLOUR_PALETTE[currentTheme]["background"])
    
     style = ttk.Style()
