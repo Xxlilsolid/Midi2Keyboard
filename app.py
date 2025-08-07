@@ -115,7 +115,7 @@ if __name__ == '__main__':
             
             appVer = ttk.Label(newWindow, text=f"M2K4L: {settings.APP_VER}", foreground='grey', font=font.Font(size=8), style="SpecialTheme.TLabel")
             checkUpdate = ttk.Button(buttonFrame, text=f"Check updates", state="disabled", style="Theme.TButton")
-            changeKeyboardLayout = ttk.Button(buttonFrame, text="Change Keyboard layout", style="Theme.TButton")
+            changeKeyboardLayout = ttk.Button(buttonFrame, text="Change Keyboard layout", style="Theme.TButton", command=lambda: pianomenu())
             apply = ttk.Button(buttonFrame, text="Apply", command=lambda: writetooptions(), style="Theme.TButton")
             close = ttk.Button(buttonFrame, text="Ok", command=lambda: newWindow.destroy(), style="Theme.TButton")
 
@@ -156,6 +156,9 @@ if __name__ == '__main__':
                         break
                 Log.writelog(f"[INFO] Saved transposition mode: {transpositionDropdown.get()}")
                 Log.writelog(f"[INFO] Saved theme: {themeDropdown.get()}")
+
+            def pianomenu():
+                pass
             
             transpositionLabel.grid(row=0, column=0) # options 
             transpositionDropdown.grid(row=1, column=0)
