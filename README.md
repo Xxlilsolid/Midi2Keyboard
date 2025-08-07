@@ -85,7 +85,7 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [x] Ability to download .mp3s and convert them into .mids in one
 - [x] Log handling
 - [x] Exception handling (because its basically non existent lol)
-- [ ] More transpostion options? (Idk if ive implemented it correctly)
+- [x] More transpostion options? (Idk if ive implemented it correctly)
 - [ ] GUI Overhaul
 - [ ] Build pre-built binaries. 
 - [ ] Comment and/or make docstrings in methods
