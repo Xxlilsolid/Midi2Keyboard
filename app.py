@@ -127,25 +127,30 @@ if __name__ == '__main__':
                                         "System default": 2}
                 filechecker.FileChecker().write_settings("settings.json", ["transposition_mode", transpositionDropdownConvert[transpositionDropdown.get()]])
                 filechecker.FileChecker().write_settings("settings.json", ["theme", themeDropdownConvert[themeDropdown.get()]])
-                root.configure(background=COLOUR_PALETTE[themeDropdownConvert[themeDropdown.get()]]["background"])
                 global currentTheme
                 currentTheme = themeDropdownConvert[themeDropdown.get()]
+                if currentTheme == 2:
+                    currentTheme = str(subprocess.check_output(["gsettings", "get", "org.gnome.desktop.interface", "color-scheme"]))
+                    if "dark" in currentTheme.lower():
+                        currentTheme = 1
+                    else:
+                        currentTheme = 0
+                root.configure(background=COLOUR_PALETTE[currentTheme]["background"])
                 style.configure("Theme.TButton", background=COLOUR_PALETTE[currentTheme]["buttonBackground"], foreground=COLOUR_PALETTE[currentTheme]["label"])
                 style.configure("Theme.TLabel", background=COLOUR_PALETTE[currentTheme]["background"], foreground=COLOUR_PALETTE[currentTheme]["label"])
                 style.configure("SpecialTheme.TLabel", background=COLOUR_PALETTE[currentTheme]["background"])
                 style.map("Theme.TButton", background=[("active", COLOUR_PALETTE[currentTheme]["buttonHover"])])
                 extras = [root]
                 while True:
-                    extras[0].configure(background=COLOUR_PALETTE[themeDropdownConvert[themeDropdown.get()]]["background"])
+                    extras[0].configure(background=COLOUR_PALETTE[currentTheme]["background"])
                     for i in extras[0].winfo_children():
                         if any(x in i.__class__.__name__ for x in {"Toplevel", "Frame"}):
                             extras.append(i)
                         else:
                             try:
-                                i.configure(background=COLOUR_PALETTE[themeDropdownConvert[themeDropdown.get()]]["background"])
-                            except Exception as e:
-                                print(i)
-                                print(e)
+                                i.configure(background=COLOUR_PALETTE[currentTheme]["background"])
+                            except:
+                                pass
                     extras.pop(0)
                     if extras == []:
                         break
