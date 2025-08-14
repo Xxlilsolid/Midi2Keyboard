@@ -97,6 +97,7 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [ ] PKGBUILD would be cool ig
 - [ ] Project logo for README and icon in bar
 - [ ] Github pages
+- [ ] Additional providers for song conversion
 
 
 List subject to change
