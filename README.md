@@ -23,7 +23,7 @@ Oh and this project does feature one feature that isnt present with the other so
 
 ### Download music via Youtube and convert them to .mid via ai-midi.com
 >[!NOTE]
->If a cover has a midi file download. USE THAT INSTEAD. The AI service can sometimes transcribe the song incorrectly which can result in repeated notes on sustained notes etc. Synthesia covers work best with the programme so try and find those!
+>If a cover has a midi file download. USE THAT INSTEAD. The AI service can sometimes transcribe the song incorrectly which can result in repeated notes on sustained notes etc. Piano synthesia covers work best with the programme so try and find those!
 - The programme allows you to paste Youtube URLs of your favourite piano covers and converts them automatically using AI!
 
 ### Transposition modes
