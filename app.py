@@ -224,7 +224,7 @@ if __name__ == '__main__':
             refreshCookieEntry = ttk.Entry(frame, width=25)
             if filechecker.FileChecker().read_settings(SETTINGS_FILE)["refresh_token"] != '':
                 refreshLabel.config(text="Refresh token already set, you can change it here")
-            songlabel = ttk.Label(frame, text="Enter song URL from youtube (Piano covers are best)", justify="center", style="Theme.TLabel")
+            songlabel = ttk.Label(frame, text="Enter song URL from youtube (Piano synthesia covers are best)", justify="center", style="Theme.TLabel")
             songEntry = ttk.Entry(frame, width=25)
 
             def downloadsong(): # Opens GUI with progress
