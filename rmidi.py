@@ -167,6 +167,9 @@ else:
                 }]
             }
 
+            if "nt" in os.name.lower():
+                ydl_opts["ffmpeg_location"] = r"C:\\ffmpeg"
+
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 for file in os.listdir(tmplocation): os.remove(os.path.join(tmplocation, file))
                 self.downloadprogress = "Downloading song...\n"
@@ -245,8 +248,8 @@ else:
                     z = requests.get(download_url)
                     with open(f"{tmplocation}/{os.listdir(tmplocation)[0][:-4]}.mid", 'wb') as f:
                         f.write(z.content)
-                        shutil.move(f"{tmplocation}/{os.listdir(tmplocation)[0][:-4]}.mid", f"{os.path.abspath("./music")}/{os.listdir(tmplocation)[0][:-4]}.mid")
-                        self.downloadprogress = "MIDI file downloaded successfully!\n"
-                        print("MIDI file downloaded successfully!")
-                        break
+                    shutil.move(f"{tmplocation}/{os.listdir(tmplocation)[0][:-4]}.mid", f"{os.path.abspath("./music")}/{os.listdir(tmplocation)[0][:-4]}.mid")
+                    self.downloadprogress = "MIDI file downloaded successfully!\n"
+                    print("MIDI file downloaded successfully!")
+                    break
                 sleep(5)
