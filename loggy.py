@@ -75,7 +75,7 @@ else:
             if editmode == True:
                 return
             import filechecker
-            filechecker.FileChecker().check_file('./logs', True)
+            filechecker.FileChecker().check_dir('./logs', True)
             creationdate = datetime.datetime.now()
             if filechecker.FileChecker().check_file(self.__filedir, False)[0] == "True": # Renames
                 dateandtime = self.getheader()
