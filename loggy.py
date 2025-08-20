@@ -79,7 +79,7 @@ else:
             creationdate = datetime.datetime.now()
             if filechecker.FileChecker().check_file(self.__filedir, False)[0] == "True": # Renames
                 dateandtime = self.getheader()
-                os.rename(self.__absfiledir, os.path.abspath("./logs/"+f"{self.digitconvert[str(dateandtime[2])]}.{self.digitconvert[str(dateandtime[1])]}.{str(dateandtime[0])} {self.digitconvert[str(dateandtime[3])]}:{self.digitconvert[str(dateandtime[4])]}:{self.digitconvert[str(dateandtime[5])]}.log")) #Defo needs work
+                os.rename(self.__absfiledir, os.path.abspath("./logs/"+f"{self.digitconvert[str(dateandtime[2])]}.{self.digitconvert[str(dateandtime[1])]}.{str(dateandtime[0])} [{self.digitconvert[str(dateandtime[3])]}.{self.digitconvert[str(dateandtime[4])]}.{self.digitconvert[str(dateandtime[5])]}].log")) #Defo needs work
                 filechecker.FileChecker().check_file(self.__filedir, True)
             else:  # Creates new file
                 filechecker.FileChecker().check_file(self.__filedir, True)
