@@ -10,6 +10,7 @@ from time import sleep
 import shutil
 import filechecker
 import loggy
+import platform
 
 if __name__ == "__main__":
     print("This is a module silly")
@@ -182,7 +183,7 @@ else:
                 }]
             }
 
-            if "nt" in os.name.lower():
+            if platform.system().lower() == "windows":
                 ydl_opts["ffmpeg_location"] = r"C:\\ffmpeg"
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:

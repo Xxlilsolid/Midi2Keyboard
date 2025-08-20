@@ -10,6 +10,8 @@ from tkinter import font
 import loggy
 import rmidi
 import filechecker
+import platform
+import winreg
 
 if __name__ == '__main__':
     root = tkinter.Tk()
@@ -53,7 +55,15 @@ if __name__ == '__main__':
                 Log.writelog(f"[WARNING] The key {key} is not present in {SETTINGS_FILE}. Defaulting to pair {key}: {DEFAULT_SETTINGS[key]}", True)
                 filechecker.FileChecker().write_settings(SETTINGS_FILE, [key, DEFAULT_SETTINGS[key]])  
     if filechecker.FileChecker().read_settings(SETTINGS_FILE)["theme"] == 2:
-        currentTheme = str(subprocess.check_output(["gsettings", "get", "org.gnome.desktop.interface", "color-scheme"]))
+        if platform.system().lower() == "linux":
+            currentTheme = str(subprocess.check_output(["gsettings", "get", "org.gnome.desktop.interface", "color-scheme"]))
+        elif platform.system().lower() == "windows":
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize") as key:
+                winlightmode = winreg.QueryValueEx(key, "AppsUseLightTheme")[0]
+            if winlightmode == 0:
+                currentTheme = "dark"
+            else:
+                currentTheme = "light"
         if "dark" in currentTheme.lower():
             currentTheme = 1
         else:
