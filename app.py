@@ -44,6 +44,8 @@ if __name__ == '__main__':
         root.wm_attributes("-type", "utility")
 
     Log.writelog("[INFO] " + filechecker.FileChecker().check_dir('./music', True)[1], True)
+    Log.writelog("[INFO] " + filechecker.FileChecker().check_dir("./tmp", True)[1], True)
+    Log.writelog("[INFO] " + filechecker.FileChecker().check_dir('./extensions/keyboardlayout', True)[1], True)
     if filechecker.FileChecker().read_settings(SETTINGS_FILE) == False: 
         filechecker.FileChecker().generate_settings(SETTINGS_FILE, DEFAULT_SETTINGS) # Generates settings
     else:# Integrity check of settings.json
@@ -78,7 +80,6 @@ if __name__ == '__main__':
     style.configure("Theme.TLabel", background=COLOUR_PALETTE[currentTheme]["background"], foreground=COLOUR_PALETTE[currentTheme]["label"])
     style.configure("SpecialTheme.TLabel", background=COLOUR_PALETTE[currentTheme]["background"])
     style.map("Theme.TButton", background=[("hover", COLOUR_PALETTE[currentTheme]["buttonHover"])])
-    Log.writelog("[INFO] " + filechecker.FileChecker().check_dir("./tmp", True)[1], True)
     Log.writelog(f"[INFO] M2K4L is on version {settings.APP_VER}", True)
     
 # End of initialisation of programme
@@ -168,7 +169,23 @@ if __name__ == '__main__':
                 Log.writelog(f"[INFO] Saved theme: {themeDropdown.get()}")
 
             def pianomenu():
-                pass
+                if not filechecker.FileChecker().check_file("./extensions/keyboardlayout/placeholder.exe", False)[0]:
+                    newWindow = tkinter.Toplevel(root, background=COLOUR_PALETTE[currentTheme]["background"])
+                    labelframe = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
+                    buttonFrame = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
+                    label1 = ttk.Label(labelframe, text="GUI Keyboard editor executable isnt found in extensions/keyboardlayout.\nPlease place the executable contents into keyboardlayout or use the fallback editor.", justify="center", style="Theme.TLabel")
+                    downloadButton = ttk.Button(buttonFrame, text="Download extension", style="Theme.TButton")
+                    fallbackButton = ttk.Button(buttonFrame, text="Use fallback", style="Theme.TButton")
+
+                    label1.pack(side=tkinter.TOP)
+                    downloadButton.pack(side=tkinter.LEFT)
+                    fallbackButton.pack(side=tkinter.LEFT)
+
+                    labelframe.pack(side=tkinter.TOP)
+                    buttonFrame.pack(side=tkinter.TOP)
+                else:
+                    pass # Launch programme
+                
             
             transpositionLabel.grid(row=0, column=0) # options 
             transpositionDropdown.grid(row=1, column=0)
