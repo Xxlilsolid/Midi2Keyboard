@@ -55,7 +55,19 @@ if __name__ == '__main__':
                 startUpSettingsJson[key]
             except:
                 Log.writelog(f"[WARNING] The key {key} is not present in {SETTINGS_FILE}. Defaulting to pair {key}: {DEFAULT_SETTINGS[key]}", True)
-                filechecker.FileChecker().write_settings(SETTINGS_FILE, [key, DEFAULT_SETTINGS[key]])  
+                filechecker.FileChecker().write_settings(SETTINGS_FILE, [key, DEFAULT_SETTINGS[key]]) 
+
+    if not filechecker.FileChecker().read_settings("keymap.json"):
+        filechecker.FileChecker().generate_settings("keymap.json", Rmidi.keymap)
+    else:
+        keymapJson = filechecker.FileChecker().read_settings("keymap.json")
+        for key in Rmidi.keymap.keys():
+            try:
+                keymapJson[key]
+            except:
+                Log.writelog(f"[WARNING] The key {key} is not present in \"keymap.json\". Defaulting to pair {key}: {Rmidi.keymap[key]}", True)
+                filechecker.FileChecker().write_settings("keymap.json", [key, Rmidi.keymap[key]]) 
+
     if filechecker.FileChecker().read_settings(SETTINGS_FILE)["theme"] == 2:
         if platform.system().lower() == "linux":
             currentTheme = str(subprocess.check_output(["gsettings", "get", "org.gnome.desktop.interface", "color-scheme"]))
@@ -169,7 +181,7 @@ if __name__ == '__main__':
                 Log.writelog(f"[INFO] Saved theme: {themeDropdown.get()}")
 
             def pianomenu():
-                if not filechecker.FileChecker().check_file("./extensions/keyboardlayout/placeholder.exe", False)[0]:
+                if not filechecker.FileChecker().check_file("./extensions/keyboardlayout/Keyboard editor.exe", False)[0]:
                     newWindow = tkinter.Toplevel(root, background=COLOUR_PALETTE[currentTheme]["background"])
                     labelframe = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
                     buttonFrame = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
@@ -184,7 +196,10 @@ if __name__ == '__main__':
                     labelframe.pack(side=tkinter.TOP)
                     buttonFrame.pack(side=tkinter.TOP)
                 else:
-                    pass # Launch programme
+                    newWindow = tkinter.Toplevel(root, background=COLOUR_PALETTE[currentTheme]["background"])
+                    label = ttk.Label(newWindow, text="Launching...", style="Theme.TLabel").pack()
+                    subprocess.run(os.path.abspath("./extensions/keyboardlayout/Keyboard editor.exe"))
+                    newWindow.destroy()
                 
             
             transpositionLabel.grid(row=0, column=0) # options 
