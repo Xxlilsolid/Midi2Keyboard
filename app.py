@@ -63,7 +63,7 @@ if __name__ == '__main__':
         keymapJson = filechecker.FileChecker().read_settings("keymap.json")
         for key in Rmidi.keymap.keys():
             try:
-                keymapJson[key]
+                keymapJson[str(key)]
             except:
                 Log.writelog(f"[WARNING] The key {key} is not present in \"keymap.json\". Defaulting to pair {key}: {Rmidi.keymap[key]}", True)
                 filechecker.FileChecker().write_settings("keymap.json", [key, Rmidi.keymap[key]]) 
