@@ -181,6 +181,21 @@ if __name__ == '__main__':
                 Log.writelog(f"[INFO] Saved theme: {themeDropdown.get()}")
 
             def pianomenu():
+                if settings.queuedSong != '':
+                    def acknowledgementWindow():
+                        newWindow = tkinter.Toplevel(root, background=COLOUR_PALETTE[currentTheme]["background"])
+                        labelframe = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
+                        buttonFrame = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
+                        label1 = ttk.Label(labelframe, text="The programme is currently playing back a midi file. Please close the programme to edit the keymaps.", justify="center", style="Theme.TLabel")
+                        acknowledgeButton = ttk.Button(buttonFrame, text="Close", style="Theme.TButton", command=lambda: newWindow.destroy())
+
+                        label1.pack(side=tkinter.TOP)
+                        acknowledgeButton.pack(side=tkinter.LEFT)
+
+                        labelframe.pack(side=tkinter.TOP)
+                        buttonFrame.pack(side=tkinter.TOP)
+                    acknowledgementWindow()
+                    return
                 if not filechecker.FileChecker().check_file("./extensions/keyboardlayout/Keyboard editor.exe", False)[0]:
                     newWindow = tkinter.Toplevel(root, background=COLOUR_PALETTE[currentTheme]["background"])
                     labelframe = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
