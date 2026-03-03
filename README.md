@@ -98,6 +98,8 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [ ] Project logo for README and icon in bar
 - [ ] Github pages
 - [ ] Additional providers for song conversion
+- [ ] Fix how the programme interprets notes
+- [ ] Optimise the programme
 
 
 List subject to change
