@@ -91,17 +91,17 @@ else:
                                                     if note >= 36:
                                                         print("transposed")
                                                         break
-                                        if self.keymap[note].isupper():
+                                        if self.keymap[str(note)].isupper():
                                             with ckeyboard.pressed(Key.shift):
-                                                ckeyboard.press(self.keymap[note]) # For uppercase
-                                                ckeyboard.release(self.keymap[note])
-                                        elif self.keymap[note] in self.specchar:
+                                                ckeyboard.press(self.keymap[str(note)]) # For uppercase
+                                                ckeyboard.release(self.keymap[str(note)])
+                                        elif self.keymap[str(note)] in self.specchar:
                                             with ckeyboard.pressed(Key.shift):
-                                                ckeyboard.press(self.speccharkeymap[self.keymap[note]]) # For special characters i.e %,! etc
-                                                ckeyboard.release(self.speccharkeymap[self.keymap[note]])
+                                                ckeyboard.press(self.speccharkeymap[self.keymap[str(note)]]) # For special characters i.e %,! etc
+                                                ckeyboard.release(self.speccharkeymap[self.keymap[str(note)]])
                                         else:
-                                            ckeyboard.press(self.keymap[note]) # For lowercase
-                                            ckeyboard.release(self.keymap[note])
+                                            ckeyboard.press(self.keymap[str(note)]) # For lowercase
+                                            ckeyboard.release(self.keymap[str(note)])
                                 break
                             settings.toggleplay = 0
                         else:
@@ -198,12 +198,12 @@ else:
             
             while True:
                 self.downloadprogress = "Waiting for transcription to complete...\n"
-                y = requests.get(f'https://api.ai-midi.com/api/v1/transcribe/status/{request_id}')
+                y = requests.get(f'https://api.ai-midi.com/api/v1/transcribe/status/{request_id}', cookies=cookiesdict)
                 if y.json()['status'] == "completed":
                     self.downloadprogress = "Transcription completed, downloading MIDI file...\n"
                     print("Transcription completed, downloading MIDI file...")
                     download_url = f"https://api.ai-midi.com/api/v1/transcribe/download/{request_id}"
-                    z = requests.get(download_url)
+                    z = requests.get(download_url, cookies=cookiesdict)
                     with open(f"{tmplocation}/{os.listdir(tmplocation)[0][:-4]}.mid", 'wb') as f:
                         f.write(z.content)
                     shutil.move(f"{tmplocation}/{os.listdir(tmplocation)[0][:-4]}.mid", f"{os.path.abspath("./music")}/{os.listdir(tmplocation)[0][:-4]}.mid")
