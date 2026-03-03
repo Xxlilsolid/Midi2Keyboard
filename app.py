@@ -12,6 +12,7 @@ import rmidi
 import filechecker
 import platform
 import winreg
+import webbrowser
 
 if __name__ == '__main__':
     root = tkinter.Tk()
@@ -363,7 +364,8 @@ if __name__ == '__main__':
             
             Disclaimer.grid(row=0, column=0)
             hyperlink.grid(row=1, column=0)
-            hyperlink.bind("<Button-1>", lambda e: subprocess.run(["xdg-open", "https://ai-midi.com"]))
+            if platform.system().lower() == "linux": hyperlink.bind("<Button-1>", lambda e: subprocess.run(["xdg-open", "https://ai-midi.com"]))
+            else: hyperlink.bind("<Button-1>", lambda e: webbrowser.open_new_tab("https://ai-midi.com"))
             instructions.grid(row=2, column=0)
             blank.grid(row=3, column=0)
             closeWindow.grid(row=4, column=0)
