@@ -99,7 +99,7 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [ ] Github pages
 - [ ] Additional providers for song conversion
 - [x] Fix how the programme interprets notes
-- [ ] Optimise the programme
+- [x] Optimise the programme
 
 
 List subject to change

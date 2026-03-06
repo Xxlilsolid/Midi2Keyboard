@@ -110,6 +110,7 @@ else:
                                 break
                             settings.toggleplay = 0
                         else:
+                            sleep(0.5)
                             pass
                     elif settings.currentsong != settings.queuedSong: # Another check, idk if its redundant or anything, icba to check.
                         settings.currentsong = settings.queuedSong
