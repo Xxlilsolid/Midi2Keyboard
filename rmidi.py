@@ -93,8 +93,8 @@ else:
                                                         break
                                         if self.keymap[str(note)].isupper():
                                             with ckeyboard.pressed(Key.shift):
-                                                ckeyboard.press(self.keymap[str(note)]) # For uppercase
-                                                ckeyboard.release(self.keymap[str(note)])
+                                                ckeyboard.press(self.keymap[str(note)].lower()) # For uppercase
+                                                ckeyboard.release(self.keymap[str(note)].lower())
                                         elif self.keymap[str(note)] in self.specchar:
                                             with ckeyboard.pressed(Key.shift):
                                                 ckeyboard.press(self.speccharkeymap[self.keymap[str(note)]]) # For special characters i.e %,! etc
