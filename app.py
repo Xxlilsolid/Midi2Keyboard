@@ -16,7 +16,7 @@ import webbrowser
 
 if __name__ == '__main__':
     root = tkinter.Tk()
-    root.title('M2K4L')
+    root.title('Midi2Keyboard')
 
 
     Log = loggy.Log(settings.LOGFILE)
@@ -27,7 +27,7 @@ if __name__ == '__main__':
     DEFAULT_SETTINGS = {"lastsong": "", 
                         "cookie": "", 
                         "refresh_token": "", 
-                        "transposition_mode": 1, 
+                        "transposition_mode": 2, 
                         "theme": 2}
     #https://htmlcolorcodes.com/
     COLOUR_PALETTE = {0: {"background": "#d9d9d9",
@@ -113,7 +113,8 @@ if __name__ == '__main__':
             def checklabeloption(dropdown):
                 settings = filechecker.FileChecker().read_settings("settings.json")
                 transpositionDropdownConvert = {0: "Nearest octave transposition with note clamping",
-                                                1: "Octave clamped Transposition"}
+                                                1: "Octave clamped Transposition",
+                                                2: "None"}
                 themeDropdownConvert = {0: "Light mode",
                                         1: "Dark mode",
                                         2: "System default"}
@@ -131,7 +132,7 @@ if __name__ == '__main__':
                         return "System default"
 
             transpositionLabel = ttk.Label(frame, text="Choose transposition mode", style="Theme.TLabel")
-            transpositionDropdown = ttk.Combobox(frame, values=["Nearest octave transposition with note clamping", "Octave clamped Transposition"], state="readonly", width=40)
+            transpositionDropdown = ttk.Combobox(frame, values=["Nearest octave transposition with note clamping", "Octave clamped Transposition", "None"], state="readonly", width=40)
             themeLabel = ttk.Label(frame, text="Choose a theme", style="Theme.TLabel")
             themeDropdown = ttk.Combobox(frame, values=["Light mode", "Dark mode", "System default"], state="readonly")
             transpositionDropdown.set(checklabeloption("transpositionDropdown"))
@@ -145,7 +146,8 @@ if __name__ == '__main__':
 
             def writetooptions():
                 transpositionDropdownConvert = {"Nearest octave transposition with note clamping": 0,
-                                                "Octave clamped Transposition": 1}
+                                                "Octave clamped Transposition": 1,
+                                                "None": 2}
                 themeDropdownConvert = {"Light mode": 0,
                                         "Dark mode": 1,
                                         "System default": 2}
@@ -154,7 +156,16 @@ if __name__ == '__main__':
                 global currentTheme
                 currentTheme = themeDropdownConvert[themeDropdown.get()]
                 if currentTheme == 2:
-                    currentTheme = str(subprocess.check_output(["gsettings", "get", "org.gnome.desktop.interface", "color-scheme"]))
+                    if platform.system().lower() == "linux":
+                        currentTheme = str(subprocess.check_output(["gsettings", "get", "org.gnome.desktop.interface", "color-scheme"]))
+                    else:
+                        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize") as key:
+                            winlightmode = winreg.QueryValueEx(key, "AppsUseLightTheme")[0]
+
+                            if winlightmode == 0:
+                                currentTheme = "dark"
+                            else:
+                                currentTheme = "light"
                     if "dark" in currentTheme.lower():
                         currentTheme = 1
                     else:
@@ -201,13 +212,13 @@ if __name__ == '__main__':
                     newWindow = tkinter.Toplevel(root, background=COLOUR_PALETTE[currentTheme]["background"])
                     labelframe = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
                     buttonFrame = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
-                    label1 = ttk.Label(labelframe, text="GUI Keyboard editor executable isnt found in extensions/keyboardlayout.\nPlease place the executable contents into keyboardlayout or use the fallback editor.", justify="center", style="Theme.TLabel")
-                    downloadButton = ttk.Button(buttonFrame, text="Download extension", style="Theme.TButton")
-                    fallbackButton = ttk.Button(buttonFrame, text="Use fallback", style="Theme.TButton")
+                    label1 = ttk.Label(labelframe, text="GUI Keyboard editor executable isnt found in extensions/keyboardlayout.\nPlease place the executable contents into keyboardlayout or edit the keymap.json file manually.", justify="center", style="Theme.TLabel")
+                    downloadButton = ttk.Button(buttonFrame, text="Download extension", style="Theme.TButton", command=lambda: webbrowser.open_new_tab("https://github.com/Xxlilsolid/Keyboard-Editor-for-M2K"))
+                    # fallbackButton = ttk.Button(buttonFrame, text="Use fallback", style="Theme.TButton")
 
                     label1.pack(side=tkinter.TOP)
                     downloadButton.pack(side=tkinter.LEFT)
-                    fallbackButton.pack(side=tkinter.LEFT)
+                    # fallbackButton.pack(side=tkinter.LEFT)
 
                     labelframe.pack(side=tkinter.TOP)
                     buttonFrame.pack(side=tkinter.TOP)

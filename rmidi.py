@@ -91,6 +91,11 @@ else:
                                                     if note >= 36:
                                                         print("transposed")
                                                         break
+                                        elif modeselection == 2:
+                                            if note < 36:
+                                                continue
+                                            if note > 96:
+                                                continue
                                         if self.keymap[str(note)].isupper():
                                             with ckeyboard.pressed(Key.shift):
                                                 ckeyboard.press(self.keymap[str(note)].lower()) # For uppercase
