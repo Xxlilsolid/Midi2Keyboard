@@ -139,7 +139,7 @@ if __name__ == '__main__':
             themeDropdown.set(checklabeloption("theme"))
             
             appVer = ttk.Label(newWindow, text=f"M2K4L: {settings.APP_VER}", foreground='grey', font=font.Font(size=8), style="SpecialTheme.TLabel")
-            checkUpdate = ttk.Button(buttonFrame, text=f"Check updates", state="disabled", style="Theme.TButton")
+            checkUpdate = ttk.Button(buttonFrame, text=f"Check updates", state="enabled", style="Theme.TButton", command=lambda: checkUpdateWindow())
             changeKeyboardLayout = ttk.Button(buttonFrame, text="Change Keyboard layout", style="Theme.TButton", command=lambda: pianomenu())
             apply = ttk.Button(buttonFrame, text="Apply", command=lambda: writetooptions(), style="Theme.TButton")
             close = ttk.Button(buttonFrame, text="Ok", command=lambda: newWindow.destroy(), style="Theme.TButton")
@@ -227,7 +227,32 @@ if __name__ == '__main__':
                     label = ttk.Label(newWindow, text="Launching...", style="Theme.TLabel").pack()
                     subprocess.run(os.path.abspath("./extensions/keyboardlayout/Keyboard editor.exe"))
                     newWindow.destroy()
-                
+            
+            def checkUpdateWindow():
+                newWindow = tkinter.Toplevel(root, background=COLOUR_PALETTE[currentTheme]["background"])
+                frame = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
+                buttonFrame = tkinter.Frame(newWindow, background=COLOUR_PALETTE[currentTheme]["background"])
+                progress = ttk.Label(frame, text="Checking for updates...", style="Theme.TLabel")
+                confirm = ttk.Button(buttonFrame, text="OK", state="disabled", style="Theme.TButton")
+
+                if settings.desktop_session in {"hyprland", "sway", "i3"}:
+                    newWindow.wm_attributes("-type", "utility")
+
+                def checkUpdates(isStable: bool, isCompiled: bool): # isStable -> determines whether its a git release or not.                                                                     # isCompiled -> determines whether the programme is frozen
+                    if isStable == False and isCompiled == False:   # Attempt to replace all python files from remote
+                        pass 
+                    if isStable == False and isCompiled == True: # Warn user that a new commit is available
+                        pass
+                    if isStable == True: # Attempts to replace all files
+                        pass
+
+                # checkUpdates()
+
+                progress.pack(side=tkinter.TOP)
+                confirm.pack(side=tkinter.LEFT)
+
+                frame.pack(side=tkinter.TOP)
+                buttonFrame.pack(side=tkinter.TOP)
             
             transpositionLabel.grid(row=0, column=0) # options 
             transpositionDropdown.grid(row=1, column=0)
