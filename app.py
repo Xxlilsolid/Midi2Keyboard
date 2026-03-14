@@ -246,7 +246,7 @@ if __name__ == '__main__':
                     if isStable == True: # Attempts to replace all files
                         pass
 
-                # checkUpdates()
+                checkUpdates(False, True)
 
                 progress.pack(side=tkinter.TOP)
                 confirm.pack(side=tkinter.LEFT)

@@ -174,6 +174,7 @@ else:
                     filechecker.FileChecker().write_settings("settings.json", ["cookie", refreshrequest.json()["access_token"]])
                     print("Refreshed token and writen new token to settings.json")
                     self.downloadprogress = "Refreshed token, retrying upload...\n"
+                    cookiesdict["accessToken"] = refreshrequest.json()["access_token"]
                     x = requests.post(URL, files={'input_audio': open(f'{tmplocation}/{os.listdir(tmplocation)[0]}', 'rb')}, cookies={"accessToken": refreshrequest.json()["access_token"]})
                     request_id = x.json()['request_id']
                 
