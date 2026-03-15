@@ -1,3 +1,5 @@
+<img src="src/assets/icons/application_icon512.png" alt="M2K Icon">
+
 # Midi2Keyboard <sub>(Formerly known as M2K4L)</sub>
 
 > [!CAUTION]
