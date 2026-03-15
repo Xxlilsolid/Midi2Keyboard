@@ -17,6 +17,8 @@ import webbrowser
 if __name__ == '__main__':
     root = tkinter.Tk()
     root.title('Midi2Keyboard')
+    icon = tkinter.PhotoImage(file=os.path.abspath("./src/assets/icons/application_icon512.png"))
+    root.iconphoto(True, icon)
 
 
     Log = loggy.Log(settings.LOGFILE)
@@ -139,7 +141,7 @@ if __name__ == '__main__':
             themeDropdown.set(checklabeloption("theme"))
             
             appVer = ttk.Label(newWindow, text=f"M2K4L: {settings.APP_VER}", foreground='grey', font=font.Font(size=8), style="SpecialTheme.TLabel")
-            checkUpdate = ttk.Button(buttonFrame, text=f"Check updates", state="enabled", style="Theme.TButton", command=lambda: checkUpdateWindow())
+            checkUpdate = ttk.Button(buttonFrame, text=f"Check updates", state="disabled", style="Theme.TButton", command=lambda: checkUpdateWindow())
             changeKeyboardLayout = ttk.Button(buttonFrame, text="Change Keyboard layout", style="Theme.TButton", command=lambda: pianomenu())
             apply = ttk.Button(buttonFrame, text="Apply", command=lambda: writetooptions(), style="Theme.TButton")
             close = ttk.Button(buttonFrame, text="Ok", command=lambda: newWindow.destroy(), style="Theme.TButton")
