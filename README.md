@@ -97,7 +97,7 @@ Once I get the project to where I am satisfied, I will probably stop maintaining
 - [ ] Abide by the naming conventions
 - [ ] Ability to pause and unpause songs w/o stopping the whole song
 - [ ] PKGBUILD would be cool ig
-- [ ] Project logo for README and icon in bar
+- [x] Project logo for README and icon in bar
 - [ ] Github pages
 - [ ] Additional providers for song conversion
 - [x] Fix how the programme interprets notes
