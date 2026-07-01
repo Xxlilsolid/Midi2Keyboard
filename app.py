@@ -13,11 +13,12 @@ import filechecker
 import platform
 import winreg
 import webbrowser
+import filey
 
 if __name__ == '__main__':
     root = tkinter.Tk()
     root.title('Midi2Keyboard')
-    icon = tkinter.PhotoImage(file=os.path.abspath("./src/assets/icons/application_icon512.png"))
+    icon = tkinter.PhotoImage(file=os.path.abspath(filey.Filey().find_data_file("./src/assets/icons/application_icon512.png")))
     root.iconphoto(True, icon)
 
 

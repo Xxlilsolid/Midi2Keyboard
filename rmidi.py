@@ -47,6 +47,7 @@ else:
             listner = keyboard.Listener(on_press=on_press)
             listner.start()
             while True:
+                sleep(2)
                 if settings.queuedSong != '':
                     if settings.currentsong == settings.queuedSong:
                         settings.currentsong = settings.queuedSong
