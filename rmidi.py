@@ -141,10 +141,16 @@ else:
                 try:
                     error_code = ydl.download(url)
                 except Exception as e:
-                    self.downloadprogress = f"[ERROR: {type(e).__name__}] An error has occured and the process can not continue."
-                    self.Log.writelog(f"[ERROR: {type(e).__name__}] An error has occured and the process can not continue.", True)
-                    self.Log.writelog(f"{e}", True)
-                    return 1
+                    if "The following content is not available on this app.." in e.msg:
+                        self.downloadprogress = f"[ERROR: {type(e).__name__}] An error has occured. Please update your packages."
+                        self.Log.writelog(f"[ERROR: {type(e).__name__}] An error has occured. Please update your packages.", True)
+                        self.Log.writelog(f"{e}", True)
+                        return 2
+                    else:
+                        self.downloadprogress = f"[ERROR: {type(e).__name__}] An error has occured and the process can not continue."
+                        self.Log.writelog(f"[ERROR: {type(e).__name__}] An error has occured and the process can not continue.", True)
+                        self.Log.writelog(f"{e}", True)
+                        return 1
                 self.downloadprogress = "Song downloaded\n"
 
             cookiesdict = {"accessToken": cookie}
