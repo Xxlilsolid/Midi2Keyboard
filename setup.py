@@ -22,6 +22,7 @@ setup(
     name="M2K",
     version="0.1",
     description="Turns MID files into virtual keystrokes",
+    icon="src/assets/icons/git_application_icon512.png",
     options={"build_exe": build_exe_options},
     executables=[{"script": "app.py", "base": "gui"}],
 )
