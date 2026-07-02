@@ -19,9 +19,9 @@ build_exe_options = {
 }
 
 setup(
-    name="guifoo",
+    name="M2K",
     version="0.1",
-    description="My GUI application!",
+    description="Turns MID files into virtual keystrokes",
     options={"build_exe": build_exe_options},
     executables=[{"script": "app.py", "base": "gui"}],
 )

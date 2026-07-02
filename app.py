@@ -96,7 +96,7 @@ if __name__ == '__main__':
     style.configure("Theme.TLabel", background=COLOUR_PALETTE[currentTheme]["background"], foreground=COLOUR_PALETTE[currentTheme]["label"])
     style.configure("SpecialTheme.TLabel", background=COLOUR_PALETTE[currentTheme]["background"])
     style.map("Theme.TButton", background=[("hover", COLOUR_PALETTE[currentTheme]["buttonHover"])])
-    Log.writelog(f"[INFO] M2K4L is on version {settings.APP_VER}", True)
+    Log.writelog(f"[INFO] M2K is on version {settings.APP_VER}", True)
     
 # End of initialisation of programme
 
@@ -141,7 +141,7 @@ if __name__ == '__main__':
             transpositionDropdown.set(checklabeloption("transpositionDropdown"))
             themeDropdown.set(checklabeloption("theme"))
             
-            appVer = ttk.Label(newWindow, text=f"M2K4L: {settings.APP_VER}", foreground='grey', font=font.Font(size=8), style="SpecialTheme.TLabel")
+            appVer = ttk.Label(newWindow, text=f"M2K: {settings.APP_VER}", foreground='grey', font=font.Font(size=8), style="SpecialTheme.TLabel")
             checkUpdate = ttk.Button(buttonFrame, text=f"Check updates", state="disabled", style="Theme.TButton", command=lambda: checkUpdateWindow())
             changeKeyboardLayout = ttk.Button(buttonFrame, text="Change Keyboard layout", style="Theme.TButton", command=lambda: pianomenu())
             apply = ttk.Button(buttonFrame, text="Apply", command=lambda: writetooptions(), style="Theme.TButton")
