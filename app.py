@@ -14,6 +14,7 @@ import platform
 import winreg
 import webbrowser
 import filey
+from tkinter import filedialog
 
 if __name__ == '__main__':
     root = tkinter.Tk()
@@ -31,7 +32,8 @@ if __name__ == '__main__':
                         "cookie": "", 
                         "refresh_token": "", 
                         "transposition_mode": 2, 
-                        "theme": 2}
+                        "theme": 2,
+                        "ffmpeg_directory": ""}
     #https://htmlcolorcodes.com/
     COLOUR_PALETTE = {0: {"background": "#d9d9d9",
                           "buttonBackground": "#d9d9d9",
@@ -143,6 +145,7 @@ if __name__ == '__main__':
             
             appVer = ttk.Label(newWindow, text=f"M2K: {settings.APP_VER}", foreground='grey', font=font.Font(size=8), style="SpecialTheme.TLabel")
             checkUpdate = ttk.Button(buttonFrame, text=f"Check updates", state="disabled", style="Theme.TButton", command=lambda: checkUpdateWindow())
+            setFFDirectory = ttk.Button(buttonFrame, text=f"Set FFMPEG directory", state="enabled", style="Theme.TButton", command=lambda: setdirectory())
             changeKeyboardLayout = ttk.Button(buttonFrame, text="Change Keyboard layout", style="Theme.TButton", command=lambda: pianomenu())
             apply = ttk.Button(buttonFrame, text="Apply", command=lambda: writetooptions(), style="Theme.TButton")
             close = ttk.Button(buttonFrame, text="Ok", command=lambda: newWindow.destroy(), style="Theme.TButton")
@@ -257,15 +260,22 @@ if __name__ == '__main__':
                 frame.pack(side=tkinter.TOP)
                 buttonFrame.pack(side=tkinter.TOP)
             
+            def setdirectory():
+                folder_path = filedialog.askdirectory(title="Select a folder")
+                if folder_path:
+                    filechecker.FileChecker().write_settings("settings.json", ["ffmpeg_directory", folder_path])
+                    Log.writelog(f"[INFO] Set {folder_path} as ffmpeg directory", True)
+
             transpositionLabel.grid(row=0, column=0) # options 
             transpositionDropdown.grid(row=1, column=0)
             themeLabel.grid(row=2, column=0)
             themeDropdown.grid(row=3, column=0)
 
             checkUpdate.grid(row=0, column=0) #buttonFrame
-            changeKeyboardLayout.grid(row=0, column=1)
-            close.grid(row=0, column=2)
-            apply.grid(row=0, column=3) 
+            setFFDirectory.grid(row=0, column=1)
+            changeKeyboardLayout.grid(row=0, column=2)
+            close.grid(row=0, column=3)
+            apply.grid(row=0, column=4) 
             
             frame.pack(side=tkinter.TOP) # Everything else
             buttonFrame.pack(side=tkinter.TOP)
